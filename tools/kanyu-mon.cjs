@@ -13,11 +13,11 @@ const SIGNS = [
   [/学びながら|スキルが身につ|サポート(体制)?(が)?充実|研修(あり|制度)|育成|教材/, '学べると誘う'],
 ]
 module.exports = (text) => {
-  // CW の全ページの下に付く注意書き（「サービス外連絡申請」の承認前に…）を外してから数える
+  // CW の全ページの下に付く注意書き（「サービス外連絡申請」の承認前に…）で、どの募集にも『外の連絡へ誘導』が1つ付いていた → その1文を外してから数える
   const t = String(text || '').replace(/MLMや購入代行[^\n]*/g, '')
   const hits = []
   for (const [re, why] of SIGNS) { const m = t.match(re); if (m) hits.push(why + '（' + m[0].slice(0, 20) + '）') }
-  // スクールの受講を聞く印は強い印。ほかに1つあれば止める
+  // スクールの受講を聞く印は強い印。ほかに1つあれば止める（実物 13574971 は印1つで素通りしていた）
   const strong = hits.some(h => h.startsWith('スクールの受講を聞く'))
   return { hits, kanyu: hits.length >= 3 || (strong && hits.length >= 2) }
 }
