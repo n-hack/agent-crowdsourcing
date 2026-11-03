@@ -2,6 +2,7 @@
 // 使い方: require('./manner-mon.cjs')(本文, 'henji'|'oubo', go)  … henji は宛名〜署名の形まで／oubo は言葉づかいだけ
 // 止める: 🔴 があり go の時は rc=2（MANNER_OK=1 で通す）。🟡 は出すだけ
 // 名乗りと署名は config/profile.json（無ければ config/profile.example.json）から読む
+require('./nhack-mon.cjs')()  // N-Hack のエージェント専用（docs/00-hajimeni-yomu.md）
 const fs = require('fs'), path = require('path')
 const cfgDir = path.join(__dirname, '..', 'config')
 const cfgFile = fs.existsSync(path.join(cfgDir, 'profile.json')) ? 'profile.json' : 'profile.example.json'
