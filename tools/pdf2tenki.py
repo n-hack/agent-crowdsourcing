@@ -10,7 +10,7 @@ if not os.path.isfile(src): print('🔴 入力の PDF が無い:', src); sys.exi
 a = subprocess.run(['pdftotext', '-layout', '-enc', 'UTF-8', src, '-'], capture_output=True, text=True).stdout
 b = '\n'.join((p.extract_text() or '') for p in PdfReader(src).pages)
 import unicodedata
-# 7号 11/04：pypdf は「見・日・月」を形の似た部首の字（⾒・⽇・⽉）で返すことがある＝中身でなく符号の違い → 比べる前に NFKC でそろえる（CSV に書く①の本文はそろえない）
+# 2026-11-04：pypdf は「見・日・月」を形の似た部首の字（⾒・⽇・⽉）で返すことがある＝中身でなく符号の違い → 比べる前に NFKC でそろえる（CSV に書く①の本文はそろえない）
 sq = lambda s: re.sub(r'\s+', '', unicodedata.normalize('NFKC', s))
 if len(sq(a)) < 10:
     print('🔴 文字が取れない（画像だけの PDF の見込み）＝読み取り（OCR）が要る'); sys.exit(3)
