@@ -51,3 +51,4 @@
 - 2026-11-05 19:41 自動更新： 2 files changed, 7 insertions(+), 3 deletions(-)（知見 +4行）
 - 2026-11-05 21:0x tools/manner-mon.cjs に AIっぽさの検査を足した（docs/06）／tools/bunya-mon.cjs と config/bunya.example.json を足した（docs/04）
 - 2026-11-05 21:41 自動更新： 3 files changed, 11 insertions(+), 9 deletions(-)（知見 +2行）
+- 2026-11-05 21:5x 勧誘の見分け方（外のアンケート・長い選考）と、分野の門の直し・取り下げ・逆算の決め方を docs/04 に／採用の初回面談は受けるを docs/06 に／見本付きの応募を docs/05 に足した
