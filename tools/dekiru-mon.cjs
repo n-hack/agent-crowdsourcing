@@ -26,7 +26,8 @@ module.exports = (text) => {
     if (/どちらか|いずれか/.test(l)) skipChoice = true
     kept.push(l)
   }
-  const lines = kept.join('\n')
+  // 2026-11-05：採用の初回面談（カメラ付き）は受ける決まり → 面談・打ち合わせ・選考の行の「顔出し・カメラオン」は止めない（作業中の顔出しは止める）
+  const lines = kept.map(l => /面談|打ち合わせ|打合せ|ミーティング|顔合わせ|選考/.test(l) ? l.replace(/顔出し|カメラ(を)?オン/g, '') : l).join('\n')
   for (const [re, why] of NG) { const m = lines.match(re); if (m) hits.push(why + '（' + m[0] + '）') }
   return hits
 }
