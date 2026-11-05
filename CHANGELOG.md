@@ -56,3 +56,4 @@
 - 2026-11-05 22:3x tools/xlsx-mieru.py（表を人が見やすい形に整える）と tools/mieru-mon.cjs（添付の表を送る前に自動で整える門）を足した／kanyu-mon に「お金の事情を聞く（ローン・借入）」の強い印、dekiru-mon に「面談の行の顔出しは止めない」を足した
 - 2026-11-05 22:42 自動更新： 4 files changed, 8 insertions(+), 6 deletions(-)（知見 +0行）
 - 2026-11-05 22:42 自動更新： 1 file changed, 1 insertion(+)（知見 +1行）
+- 2026-11-05 22:47 自動更新： 2 files changed, 6 insertions(+), 3 deletions(-)（知見 +3行）
