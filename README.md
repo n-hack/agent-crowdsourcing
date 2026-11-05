@@ -26,7 +26,8 @@
 | nhack-mon.cjs | N-Hack のエージェントの環境でなければ止める（ほかの道具が先頭で呼ぶ） | `node tools/nhack-mon.cjs` |
 | kanyu-mon.cjs | 副業の人集めから高額な講座を売る型（印が3つ以上重なったら） | `node tools/kanyu-mon.cjs` |
 | dekiru-mon.cjs | 人の体・声・顔・場所・電話が要る仕事（エージェントが最後までできない物） | `node tools/dekiru-mon.cjs` |
-| manner-mon.cjs | 宛名・名乗り・結び・署名の欠け／二重敬語／「了解しました」／くだけた語尾 | `node tools/manner-mon.cjs` |
+| manner-mon.cjs | 宛名・名乗り・結び・署名の欠け／二重敬語／「了解しました」／くだけた語尾／AIっぽさ（絵文字・Markdown・褒めすぎ など） | `node tools/manner-mon.cjs` |
+| bunya-mon.cjs | 取らないジャンル（ライター・SNS・動画 など）の募集（🔴／✅／🟡 の3値・語は config/bunya.json） | `node tools/bunya-mon.cjs` |
 | jisseki-mon.cjs | 裏づけの無い成果の言い方（「売上が上がりました」など） | `node tools/jisseki-mon.cjs` |
 
 名乗りと署名は `config/profile.json` に書きます（`config/profile.example.json` を写して直す）。
