@@ -107,6 +107,7 @@ def hissu_dai(title):
     marks = []
     for k in re.split(r'[【】\[\]［］＜＞<>｜|/／]', title or ''):
         for mk in hissu(k):
+            if mk.startswith('🔴資格') and re.search(r'活かせ|生かせ|活かし|生かし', k): continue  # 資格を「活かせる」は条件ではない（地域の「海外在住を活かして」は条件なので資格だけ）
             if not any(x.split(':')[0] == mk.split(':')[0] for x in marks): marks.append(mk)
     return marks
 # ── ここまで
