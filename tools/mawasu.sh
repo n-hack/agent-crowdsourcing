@@ -89,7 +89,7 @@ else
   if [ $JOK -eq 1 ] && [ -s "$now" ] && [ -n "$prev" ] && [ "$prev" != "$now" ] && [ $((KAI % 6)) -ne 1 ]; then IDS=$(python3 "$T/cw-thread-erabu.py" "$prev" "$now"); HIROSA="絞り $(echo -n "$IDS" | tr ',' '\n' | grep -c .)件"; fi
   if [ "$HIROSA" = "絞り 0件" ]; then kiroku "5 返事（CW の部屋）✅ 開く部屋 0件 ／ 一覧 $(( $(wc -l < "$now") - 1 )) 行（最終更新の変わった応募なし）"
   else out=$(IDS="$IDS" jikan 900 node "$T/cw-thread-check.cjs" --atarashii 2>&1); rc=$?
-  case $rc in 0) kiroku "5 返事（CW の部屋・$HIROSA）✅ $(echo "$out" | tail -1)" ;; 1) YOU=1; kiroku "5 返事（CW の部屋・$HIROSA）🔔 $(echo "$out" | grep -c '^要返信') 件"; echo "$out" | grep '^要返信' ;;
+  case $rc in 0) kiroku "5 返事（CW の部屋・${HIROSA}）✅ $(echo "$out" | tail -1)" ;; 1) YOU=1; kiroku "5 返事（CW の部屋・${HIROSA}）🔔 $(echo "$out" | grep -c '^要返信') 件"; echo "$out" | grep '^要返信' ;;
     *) tomaru 返事の見張り "cw-thread-check.cjs rc=$rc ／ $(echo "$out" | tail -1)" ;; esac; fi
   [ -n "$JERR" ] && tomaru 返事の見張り "$JERR"
 fi
