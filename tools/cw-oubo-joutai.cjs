@@ -7,13 +7,16 @@ const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 ;(async () => {
   const b = await S.playwright().chromium.connectOverCDP(S.cdp, { timeout: 90000 }); const p = await S.tab(b, process.env.JOUTAI_TAB || 'cw-joutai')
   const rows = []
-  for (let pg = 1; pg <= 20; pg++) {
+  // 上限20頁×20行＝400で切れていた（応募が400を超えると新しい応募が一覧に載らず、二重応募の確かめも効かない）→ 80頁まで・上限に当たったら言う
+  const MAXPG = 80; let atari = false
+  for (let pg = 1; pg <= MAXPG; pg++) { if (pg === MAXPG) atari = true
     await p.goto(`https://crowdworks.jp/e/proposals?status=active&page=${pg}`, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(2500)
     const r = await p.$$eval('tr', trs => trs.map(tr => { const c = [...tr.querySelectorAll('td')].map(td => td.innerText.replace(/\s+/g, ' ').trim()); const h = [...tr.querySelectorAll('a[href]')].map(a => a.getAttribute('href')).join(' '); c.push((h.match(/\/jobs\/(\d+)/) || [])[1] || '', (h.match(/\/proposals\/(\d+)/) || [])[1] || ''); return c }).filter(c => c.length >= 8))
     if (!r.length) break
     for (const c of r) rows.push({ title: c[1], kind: c[2], client: c[3], status: c[4], kigen: c[5], koushin: c[6], job: c[c.length - 2], prop: c[c.length - 1] })
     if (r.length < 10) break
   }
+  if (atari) console.log(`🔴 上限 ${MAXPG} 頁まで読んだ＝まだ先がある見込み（行 ${rows.length}）`)
   const n = {}; for (const x of rows) n[x.status] = (n[x.status] || 0) + 1
   console.log(`行 ${rows.length} ／ ` + Object.entries(n).map(([k, v]) => `${k} ${v}`).join(' ／ '))
   const out = process.argv[2]
