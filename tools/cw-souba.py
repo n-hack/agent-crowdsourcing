@@ -2,11 +2,11 @@
 """【相場】予算の帯の無い募集（「ワーカーと相談する」）の金額を、同じ種類の募集の帯から決める（ログインなし・公開の検索を読むだけ）
 入力: 語（引数・1つ以上。募集の題名から「何を・どの道具で」の2語を取る：例「Shopify 保守」）／--id <募集の ID>（その募集自身を外す）
       ／--obi <下限>-<上限>（その募集に帯があるとき・税込の円。額は帯の上限×0.6（税抜の千円切り捨て・帯の中）で決め、相場は引かない：11/06 再現の試し7〜9で語の選び方により同じ募集が最大2倍ぶれたため）
-出力: 題名に語が1つ以上ある、帯のある固定報酬の募集を並べ（終わった募集も含む・検索の新しい順に最大50件・同じ題名の出し直しは1件）、
+出力: 題名に語が1つ以上ある、帯のある固定報酬の募集（CW テックの ⭐ の募集は外す）を並べ（終わった募集も含む・検索の新しい順に最大50件・同じ題名の出し直しは1件）、
       上限の中央値・下限の中央値・件数（契約のあった募集が5件以上ならそれだけで出す）と、
       .json の「金額の根拠」にそのまま写す1行（「相場 <語>：<帯のある|契約のあった> N 件・上限の中央値 ◯円（税込）・<日付>」）。
       目安の税抜は「上限の中央値 ÷1.1」の千円切り捨て（docs/04 の「5 値段」）
-止まる条件: 帯のある募集が5件に届かないとき rc=4（語を1つ減らして打ち直す・5件未満で決めない）。検索の頁が読めないとき rc=3
+止まる条件: 帯のある募集が5件に届かないとき rc=4（ほかの語に変えて打ち直す・5件未満で決めない。語は題名に1つあれば拾うので、語を減らすと件数はふつう減る）。検索の頁が読めないとき rc=3
 呼び方: python3 tools/cw-souba.py --id 13585056 Shopify 保守 ／ 帯のある募集は python3 tools/cw-souba.py --id 13538763 --obi 0-82500 FAQ サイト
 """
 import datetime as dt, html, json, os, re, statistics, sys, urllib.parse, urllib.request
@@ -62,18 +62,20 @@ try:
 except Exception as e:
     print('🔴 検索の頁が読めない', e); sys.exit(3)
 rows = []
+nt = 0
 for o in jo:
     j, f = o['job_offer'], (o.get('payment') or {}).get('fixed_price_payment')
     if str(j['id']) == skip or not f: continue
     lo, hi = f.get('min_budget') or 0, f.get('max_budget') or 0
     if not hi or hi < 1000: continue  # 帯の無い物・千円に届かない物（体験・選考の型）は相場に入れない
     if not any(w.lower() in j['title'].lower() for w in a): continue  # 題名に語が1つも無い物は外す（検索は本文でも当たり、別の種類が混ざる）
+    if j['title'].lstrip().startswith('⭐'): nt += 1; continue  # CW テック事務局の紹介（題名の頭が ⭐・50万〜100万円の帯）は個人限定の別の市場＝相場に入れない（試し：「AI 構築」の11件に2件混ざった）
     if any(r[5] == j['title'][:40] for r in rows): continue  # 同じ題名の出し直しは1件に数える（同じ依頼主の連投で中央値が寄る）
     rows.append((j['id'], int(lo), int(hi), j['status'], (o.get('entry') or {}).get('project_entry', {}).get('num_contracts') or 0, j['title'][:40]))
-print(f'語「{kw}」：検索 {len(jo)} 件 ／ 題名に語があり帯のある固定報酬 {len(rows)} 件（自分の募集・帯なし・千円未満・同じ題名の出し直しを外した）')
+print(f'語「{kw}」：検索 {len(jo)} 件 ／ 題名に語があり帯のある固定報酬 {len(rows)} 件（自分の募集・帯なし・千円未満・同じ題名の出し直し・CW テックの ⭐ {nt} 件を外した）')
 for r in rows: print(f'  {r[0]} {r[1]:>9,}〜{r[2]:>9,}円 {r[3]:<8} 契約{r[4]} {r[5]}')
 if len(rows) < 5:
-    print(f'🔴 帯のある募集が {len(rows)} 件（5件未満で決めない）。語を1つ減らすか広い語にして打ち直す'); sys.exit(4)
+    print(f'🔴 帯のある募集が {len(rows)} 件（5件未満で決めない）。ほかの語（同じ仕事の別の言い方・道具の名前）に変えて打ち直す（語を減らすと、題名で拾う語が減るので件数はふつう減る）'); sys.exit(4)
 kei = [r for r in rows if r[4] > 0]
 use, dore = (kei, '契約のあった') if len(kei) >= 5 else (rows, '帯のある')  # 契約まで行った募集が5件あればそちらを使う（決まった帯に近い）
 print(f'契約のあった募集 {len(kei)} 件 → 中央値は「{dore}」{len(use)} 件で出す')
