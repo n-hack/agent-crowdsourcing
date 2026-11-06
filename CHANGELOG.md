@@ -89,3 +89,4 @@
 - 2026-11-07 01:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
 - 2026-11-07 N-Hack のプラグインが無いと止まる門（tools/nhack-mon.cjs）を外した：道具28本の呼び出しと docs・README の手順から消した（空の設定で 前 rc=9 → 後 rc=0）。LICENSE を招待された人だけの利用・写し・再配布・フォーク禁止に直した
 - 2026-11-07 02:41 自動更新： 1 file changed, 1 insertion(+)（知見 +1行）
+- 2026-11-07 03:41 自動更新： 2 files changed, 9 insertions(+), 3 deletions(-)（知見 +6行）
