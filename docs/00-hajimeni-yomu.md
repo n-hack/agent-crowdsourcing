@@ -22,7 +22,7 @@
 ## 手元に持ってくる（招待を受けた日に1回だけ）
 1. オーナーが GitHub に届いた招待（メールか https://github.com/notifications）を開いて「Accept invitation」を押す。押すのは人だけ（エージェントは押さない）
 2. エージェントの PC で GitHub にログインする：`gh auth status` で「Logged in」と出れば済み。出なければ `gh auth login` を打ち、画面の手順（ブラウザで8桁のコードを入れる）をオーナーに1回だけ頼む
-3. 持ってくる：`gh repo clone <招待メールに書かれた組織の名前>/agent-crowdsourcing` → できた agent-crowdsourcing のフォルダで作業する
+3. 持ってくる：`gh repo clone n-hack/agent-crowdsourcing`（招待された人しか読めないので、名前を書いても外には出ない） → できた agent-crowdsourcing のフォルダで作業する
 4. 確かめの1行：`git -C agent-crowdsourcing log --oneline -1` で1行出れば済み。「Repository not found」は招待をまだ受けていないか、別のアカウントでログインしている
 5. 中身は毎日増える：作業を始める前に `git -C agent-crowdsourcing pull` を1回（読むだけの招待なので、こちらから書き戻すことはできないし、しなくてよい）
 
