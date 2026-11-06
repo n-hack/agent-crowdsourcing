@@ -8,6 +8,6 @@ T="$(cd "$(dirname "$0")" && pwd)"
 DATA=$(python3 -c "import sys;sys.path.insert(0,'$T');import settei as S;print(S.DATA)") || exit 9
 D=${1:-$(date +%Y-%m-%d)}; F="$DATA/oubo-kiroku.tsv"
 [ -f "$F" ] || { echo "🔴 記録が無い（$F）＝数えられない"; exit 2; }
-awk -F'\t' -v d="$D" '$1 ~ "^"d { if ($7 ~ /^(応募|提案)/) {o[$2]++; O++} else if ($7 ~ /^見送り/) M++ }
-END { printf "%s 応募 %d件（", d, O; s=""; for (k in o) {printf "%s%s %d", s, k, o[k]; s="・"}; printf "）／見送り %d件\n", M }' "$F"
-echo "数え方：oubo-kiroku.tsv・1列目が ${D}・7列目の頭が 応募|提案＝応募／見送り＝見送り（測った $(date +%H:%M)）"
+awk -F'\t' -v d="$D" '$1 ~ "^"d { if ($7 ~ /^(応募|提案)/) {R++; k=$2"|"$3; if (!(k in seen)) {seen[k]=1; o[$2]++; O++}} else if ($7 ~ /^見送り/) M++ }
+END { printf "%s 応募 %d件（", d, O; s=""; for (k in o) {printf "%s%s %d", s, k, o[k]; s="・"}; printf "）／見送り %d件（応募の行 %d・同じ場と案件IDの2行目以降は数えない）\n", M, R }' "$F"
+echo "数え方：oubo-kiroku.tsv・1列目が ${D}・7列目の頭が 応募|提案＝応募（場＋案件IDで1件・同じ案件を2つの道具が書いても1件）／見送り＝見送り（測った $(date +%H:%M)）"
