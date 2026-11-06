@@ -7,17 +7,20 @@
 //   🔴 を外して出すときは BUNYA_OK=1 と BUNYA_RIYUU=「理由（10字以上）」→ logs/bunya-soto.log（数えて見直す）
 // 「AI使用可・ChatGPT使用OK」は道具として使ってよいという意味なので、開発の印に数えない（先に消してから照らす）
 // 語は config/bunya.json（無ければ config/bunya.example.json）から読む
+// 頁に本文の始まりが無いときは null を返す（照らせない＝🔴 と分ける。go なら rc=2）。読むだけの口（mon-hantei.cjs）は「?」として返す
+// 題名の側から頁の分類の道しるべ（CW の「データ作成・入力の仕事・求人」「データ検索・データ収集 の仕事の依頼」）を消してから照らす（docs/04・試し：一級建築士の募集が道しるべの「データ作成・データ収集」で小口の ✅ になっていた）
 const fs = require('fs'), path = require('path')
 const B = path.join(__dirname, '..'), cfg = path.join(B, 'config', fs.existsSync(path.join(B, 'config', 'bunya.json')) ? 'bunya.json' : 'bunya.example.json')
 const C = JSON.parse(fs.readFileSync(cfg, 'utf8')), R = k => new RegExp('(' + C[k] + ')', 'i')
 const TSUYOI = R('強い印'), WADAI = new RegExp('^(' + C['題材になりうる印'] + ')$', 'i'), KOGUCHI = R('小口の印'), AIGO = R('AIの語'), TORANAI = new RegExp('(' + C['取らないジャンル'] + ')')
+const MICHI = /[^\s。]+ ?の仕事(?:・求人|の依頼)/g, michiKesu = s => s.replace(MICHI, ' ')
 const kesu = s => C['先に消す書き方'].reduce((a, r) => a.replace(new RegExp(r, 'gi'), ' '), s)
 const kiroku = (f, cols) => { const d = path.join(B, 'logs'); fs.mkdirSync(d, { recursive: true }); fs.appendFileSync(path.join(d, f), [new Date().toISOString(), ...cols].join('\t') + '\n') }
 const mon = module.exports = (jobText, go, id) => {
   const t = jobText || '', s = C['本文の始まり'].map(k => t.indexOf(k)).filter(i => i >= 0).sort((a, b) => a - b)[0]
-  if (s === undefined) { console.log('🔴 分野の門：本文の始まり（' + C['本文の始まり'].join('／') + '）が頁に見つからず照らせない＝頁の形が変わった'); if (go === 'go' && process.env.BUNYA_OK !== '1') process.exit(2); return false }
+  if (s === undefined) { console.log('🔴 分野の門：本文の始まり（' + C['本文の始まり'].join('／') + '）が頁に見つからず照らせない＝頁の形が変わった'); if (go === 'go' && process.env.BUNYA_OK !== '1') process.exit(2); return null }
   const e = C['本文の終わり'].map(k => t.indexOf(k, s)).filter(i => i > s).sort((a, b) => a - b)[0] ?? s + 3000
-  const ts = t.lastIndexOf(C['題名の側の始まり'], s), dai = kesu(t.slice(ts >= 0 && s - ts < 900 ? ts + C['題名の側の始まり'].length : Math.max(0, s - 600), s)), hon = kesu(t.slice(s, e))
+  const ts = t.lastIndexOf(C['題名の側の始まり'], s), dai = kesu(michiKesu(t.slice(ts >= 0 && s - ts < 900 ? ts + C['題名の側の始まり'].length : Math.max(0, s - 600), s))), hon = kesu(t.slice(s, e))
   const m = (re, x) => [...new Set(x.match(new RegExp(re.source, re.flags + 'g')) || [])]
   const daiNg = m(TORANAI, dai), daiTs = m(TSUYOI, dai), daiKo = m(KOGUCHI, dai), daiAi = m(AIGO, dai), honTs = m(TSUYOI, hon), honNg = m(TORANAI, hon), honKo = m(KOGUCHI, hon)
   const daiTsJitsu = daiTs.filter(w => !WADAI.test(w))  // 「AI業務効率化の記事」のように題材として出る語は除く
@@ -50,12 +53,17 @@ if (require.main === module) {
     ['🟡', pg('簡単なお手伝い', '詳細は面談でお伝えします。')],
     ['🟡', pg('AI に詳しい方', '社内で AI を使いたいので相談に乗ってください。')],
     ['🟡', pg('記事の自動生成ツールの開発', 'WordPress に記事を自動で投稿する仕組みを作ってください。')],
+    // 道しるべ：分類の「データ作成・データ収集」は題名ではない（13588002 の頁の形）
+    ['🟡', '仕事を探す 事務・カンタン作業の仕事・求人 データ作成・入力の仕事・求人 データ検索・データ収集の仕事・求人 大阪在住の一級建築士有資格者募集 大阪在住の一級建築士有資格者募集 データ検索・データ収集 の仕事の依頼 仕事の概要 時間単価制 仕事の詳細 資格はあるけど全く利用していない。そんな方がいればご連絡お待ちしております クライアント情報'],
+    ['✅', '仕事を探す 事務・カンタン作業の仕事・求人 リスト作成の仕事・求人 店舗の一覧をエクセルにまとめる リスト作成 の仕事の依頼 仕事の詳細 Web で調べて表にまとめる作業です。 クライアント情報'],
+    // 本文の始まりが無い頁＝照らせない（🔴 と分ける）
+    ['?', '仕事を探す GAS でスプレッドシートの集計を自動化 依頼の内容 毎朝 CSV を取り込むスクリプトを開発 クライアント情報'],
   ]
   const log = console.log; console.log = () => {}
-  const got = cases.map(([want, p]) => { const r = mon(p); return [want, r === true ? '✅' : r === false ? '🔴' : '🟡'] })
+  const got = cases.map(([want, p]) => { const r = mon(p); return [want, r === true ? '✅' : r === false ? '🔴' : r === null ? '?' : '🟡'] })
   console.log = log
   const bad = got.filter(([w, g]) => w !== g)
   for (const [i, [w, g]] of got.entries()) if (w !== g) console.log('🔴 ずれ ' + (i + 1) + '本目：はず ' + w + ' ／ 出た ' + g)
   const n = k => cases.filter(c => c[0] === k).length
-  console.log(bad.length ? `🔴 ${bad.length}件ずれ` : `✅ 🔴${n('🔴')}／✅${n('✅')}／🟡${n('🟡')} 全部合った`); process.exit(bad.length ? 1 : 0)
+  console.log(bad.length ? `🔴 ${bad.length}件ずれ` : `✅ 🔴${n('🔴')}／✅${n('✅')}／🟡${n('🟡')}／照らせず${n('?')} 全部合った`); process.exit(bad.length ? 1 : 0)
 }
