@@ -106,7 +106,13 @@ const yen = s => +String(s).replace(/,/g, '')
       const b = await obi(id, r)
       if (b === undefined) red.push('帯を照らせず（巡回の tsv に無く、公開頁も読めない）')
       else if (b === null && !String(J['金額の根拠'] || '').trim()) red.push('帯の無い募集（相談）なのに .json に「金額の根拠」が無い：python3 tools/cw-souba.py --id ' + id + ' <何を> <どの道具で> の最後の1行を写す（docs/04 の「5 値段」）')
-      else if (b) { const zei = Math.round(kin * 1.1); if (zei < b.min || zei > b.max) red.push(`金額が予算の帯の外：税込 ${zei.toLocaleString()}円 ／ 帯 ${b.min.toLocaleString()}〜${b.max.toLocaleString()}円（${b.doko}）`) }
+      else if (b) {
+        const zei = Math.round(kin * 1.1); if (zei < b.min || zei > b.max) red.push(`金額が予算の帯の外：税込 ${zei.toLocaleString()}円 ／ 帯 ${b.min.toLocaleString()}〜${b.max.toLocaleString()}円（${b.doko}）`)
+        // 試し8回目：帯ありの募集で道具を打たずに 50,000円と書き、根拠が空のまま ✅ で通った → 帯ありも cw-souba.py --obi の1行を要る
+        const nk = String(J['金額の根拠'] || '').match(/帯のある募集の額：([\d,]+)円/)
+        if (!nk) red.push(`帯のある募集なのに .json の「金額の根拠」に cw-souba.py --obi の1行が無い：python3 tools/cw-souba.py --id ${id} --obi ${b.min}-${b.max} <何を> <どの道具で> の最後の1行を写す`)
+        else if (yen(nk[1]) !== kin) red.push(`.json の金額 ${kin} が「金額の根拠」の帯のある募集の額 ${nk[1]}円 と合わない`)
+      }
     }
     // ⑥ 本文の金額と .json
     if (kin > 0) {

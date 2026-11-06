@@ -18,6 +18,8 @@ skip = ''
 obi = None
 if '--obi' in a:
     i = a.index('--obi'); obi = [int(x) for x in a[i + 1].replace(',', '').split('-')]; a = a[:i] + a[i + 2:]
+    if len(obi) != 2 or obi[1] <= 0 or obi[0] > obi[1]:  # 試し8回目：帯の無い募集に --obi 0-0 を付けて「0円を使う」と出た
+        sys.exit(f'🔴 --obi {"-".join(map(str, obi))} は帯になっていない（上限が0以下か下限が上限より上）。帯の無い（相談の）募集なら --obi を付けずに打つ')
 if '--id' in a:
     i = a.index('--id'); skip = a[i + 1]; a = a[:i] + a[i + 2:]
 if not a:
@@ -54,3 +56,4 @@ if obi:  # 帯のある募集：目安を相手の帯（税抜の千円切り捨
     olo, ohi = (x * 10 // 11 // 1000 * 1000 for x in obi)
     kin = int(min(max(zei, olo), ohi))
     print(f'帯のある募集の額：{kin:,}円（税抜）＝目安 {int(zei):,}円 を相手の帯 {obi[0]:,}〜{obi[1]:,}円（税込）の中に収めた値。これだけを使う')
+    print(f'金額の根拠（帯のある募集・.json に写す1行）：帯のある募集の額：{kin:,}円（税抜）・帯 {obi[0]:,}〜{obi[1]:,}円（税込）・相場 {kw} の目安 {int(zei):,}円・{dt.date.today():%Y-%m-%d}')

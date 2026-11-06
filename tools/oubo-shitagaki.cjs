@@ -18,7 +18,7 @@ if (!fs.existsSync(F)) {
   fs.writeFileSync(F, kata.replace('{依頼主}様', atena).replace('{名乗り}', nanori).replace('{署名}', shomei))
   console.log('下書きを作った', F)
 } else console.log('下書きは既にある（上書きしない）', F)
-if (!fs.existsSync(J)) fs.writeFileSync(J, JSON.stringify({ 場: ba, 案件ID: id, 題名: dai || '', 金額: null, 納期: null, 金額の根拠: '', 納期の理由: '', 計画の題名: '', 計画: '', メモ: '金額は税抜・納期は YYYY-M-D（既定は今日から2日後まで・長くするなら 納期の理由）。帯の無い募集は 金額の根拠 に tools/cw-souba.py の最後の1行。ランサーズは 計画の題名（20字以内）と 計画 も埋める' }, null, 1) + '\n')
+if (!fs.existsSync(J)) fs.writeFileSync(J, JSON.stringify({ 場: ba, 案件ID: id, 題名: dai || '', 金額: null, 納期: null, 金額の根拠: '', 納期の理由: '', 計画の題名: '', 計画: '', メモ: '金額は税抜・納期は YYYY-M-D（既定は今日から2日後まで・長くするなら 納期の理由）。金額の根拠 に tools/cw-souba.py の最後の1行（帯のある募集は --obi 下限-上限 を付けて打ち、出た額をそのまま金額に）。ランサーズは 計画の題名（20字以内）と 計画 も埋める' }, null, 1) + '\n')
 const body = fs.readFileSync(F, 'utf8'), ana = body.match(/\{[^{}\n]{1,20}\}/g) || []
 console.log(ana.length ? `🟡 埋める穴 ${ana.length}つ：${ana.join(' ')}（埋めるまで --go でも送らない）` : '✅ 穴は埋まっている')
 require('./manner-mon.cjs')(body, 'oubo')
