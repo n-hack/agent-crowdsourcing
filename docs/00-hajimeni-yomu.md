@@ -17,13 +17,13 @@
 
 ## エージェント自身の用意（最初に1回だけ・11/07 まっさらな体の試しで1行目に止まった所）
 1. Claude Code にログインしているか：`claude -p "ok"` で返事が出れば済み。「Not logged in」と出たら、オーナーに `/login` を1回だけ頼む（画面の手順・人がやる）
-2. 道具がそろっているか：`node -v`（18以上）・`python3 -V`・`npx playwright --version` が3つとも1行ずつ出れば済み。playwright が無ければ `npm i -g playwright && npx playwright install chromium`（docs/15 の確かめと docs/12 の巡回で使うので、ここで先に入れる）
+2. 道具がそろっているか：`node -v`（18以上）・`python3 -V`・`npx --no-install playwright --version`（`--no-install` を付けないと、無いときに外から取りに行く）が3つとも1行ずつ出れば済み。playwright が無ければ `npm i -g playwright && npx playwright install chromium`（docs/15 の確かめと docs/12 の巡回で使うので、ここで先に入れる）
 
 ## 手元に持ってくる（招待を受けた日に1回だけ）
 1. オーナーが GitHub に届いた招待（メールか https://github.com/notifications）を開いて「Accept invitation」を押す。押すのは人だけ（エージェントは押さない）
 2. エージェントの PC で GitHub にログインする：`gh auth status` で「Logged in」と出れば済み。出なければ `gh auth login` を打ち、画面の手順（ブラウザで8桁のコードを入れる）をオーナーに1回だけ頼む
 3. 持ってくる：`gh repo clone n-hack/agent-crowdsourcing`（招待された人しか読めないので、名前を書いても外には出ない） → できた agent-crowdsourcing のフォルダで作業する
-4. 確かめの1行：`git -C agent-crowdsourcing log --oneline -1` で1行出れば済み。「Repository not found」は招待をまだ受けていないか、別のアカウントでログインしている
+4. 確かめの1行：`git -C agent-crowdsourcing log --oneline -1` で1行出れば済み（clone ではなくファイルの写しで受け取ったときは、この行と 5. は飛ばす）。「Repository not found」は招待をまだ受けていないか、別のアカウントでログインしている
 5. 中身は毎日増える：作業を始める前に `git -C agent-crowdsourcing pull` を1回（読むだけの招待なので、こちらから書き戻すことはできないし、しなくてよい）
 
 ## オーナーが最初に渡す頼みの見本（オーナー向け・そのまま写してよい）
@@ -34,9 +34,10 @@
 ```
 
 ## 使い方（エージェント向け）
+1日目＝下の 1〜2（確かめ・問診票）と、答えを待つ間の試し（下の「答えが来るまで」）まで。3〜4 は答えが入ってから。
 1. 人がやる初期構築（登録・本人確認・口座・メールと予定・連絡ツール）が済んでいるかを docs/15 の確かめの行で見る。🔴 の段は人に1行で頼む
-   - 1日目は登録前なので 🔴 が並ぶのが普通。🔴 が残っていても待たずに 2. の問診票と、ログイン無しで回る `bash tools/mawasu.sh --no-browser`（段1〜3）へ進んでよい
-2. 下の「問診票」をオーナーに渡して答えをもらい、`config/profile.example.json` を `config/profile.json` に写して入れる
+   - 1日目は登録前なので 🔴 が並ぶのが普通。🔴 が残っていても待たずに 2. の問診票と、ログイン無しで回る `bash tools/mawasu.sh --no-browser`（段1〜3）へ進んでよい。ただし段1の巡回はクラウドワークスの公開の頁を読みに行く（ログインは要らないが外につなぐ）
+2. 下の「問診票」をオーナーに渡して（docs/16 の問診票と重なる問いは1回だけ聞く）答えをもらい、`config/profile.example.json` を `config/profile.json` に写して入れる
 3. docs/01〜09 を順に読む
    - 読みながら、プロフィールと見本を先に作る（docs/16・docs/07）。見本が1つも無いと応募文の根拠が出せない
 4. 1日の回し方（README・docs/12）どおりに回し、分かったことを docs/10 に足す
