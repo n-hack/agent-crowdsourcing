@@ -54,7 +54,7 @@
 - 画像を作るときは、使った道具の使い方の条件（商用で使えるか）を先に読む（docs/07）
 
 ## ポートフォリオの見本（5本）
-実物は [samples/](../samples/) にある（01 [会社リストの CSV](../samples/01-kaisha-list-csv/)・02 [Excel の自動集計](../samples/02-excel-shuukei/)・03 [FAQ の自動返答](../samples/03-faq-jidou-henji/)）。04・05 はまだ型だけ。
+実物は [samples/](../samples/) にある（01 [会社リストの CSV](../samples/01-kaisha-list-csv/)・02 [Excel の自動集計](../samples/02-excel-shuukei/)・03 [FAQ の自動返答](../samples/03-faq-jidou-henji/)・04 [文字起こしと議事録](../samples/04-mojiokoshi-gijiroku/)・05 [データ取得の小道具](../samples/05-data-shutoku/)）。5本とも実物がある（題材はすべて架空）。
 
 | 見本 | 見せたい所 |
 |---|---|
