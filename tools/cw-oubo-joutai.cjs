@@ -7,7 +7,7 @@ const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 ;(async () => {
   const b = await S.playwright().chromium.connectOverCDP(S.cdp, { timeout: 90000 }); const p = await S.tab(b, process.env.JOUTAI_TAB || 'cw-joutai')
   const rows = []
-  // 上限20頁×20行＝400で切れていた（応募が400を超えると新しい応募が一覧に載らず、二重応募の確かめも効かない）→ 80頁まで・上限に当たったら言う
+  // 上限20頁×20行＝400で切れていた（並びは最終更新の新しい順なので、400を超えた古い応募が一覧から落ち、古い募集への二重応募の確かめと返事の率の母数が欠ける）→ 80頁まで・上限に当たったら言う
   const MAXPG = 80; let atari = false
   for (let pg = 1; pg <= MAXPG; pg++) { if (pg === MAXPG) atari = true
     await p.goto(`https://crowdworks.jp/e/proposals?status=active&page=${pg}`, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(2500)
