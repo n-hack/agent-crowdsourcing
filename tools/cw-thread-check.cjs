@@ -13,7 +13,9 @@ const OWARI = /検討させていただいた結果|検討した結果|契約を
   const need = []; let n = 0, rc = 0
   try {
     const ids = new Set()
-    for (let pg = 1; pg < 15; pg++) {
+    // IDS（カンマ区切りの応募番号）を渡されたらその部屋だけ開く（mawasu.sh が応募一覧の最終更新で選ぶ・全部開くと1周10分ほどかかる）
+    if (process.env.IDS) { process.env.IDS.split(',').filter(Boolean).forEach(x => ids.add(x)); console.log('開く応募を絞った', ids.size) }
+    for (let pg = 1; pg < 15 && !process.env.IDS; pg++) {
       await p.goto('https://crowdworks.jp/e/proposals?status=active&page=' + pg, { waitUntil: 'domcontentloaded', timeout: 40000 }); await p.waitForTimeout(2500)
       const got = await p.$$eval('a[href*="/proposals/"]', as => as.map(a => (a.href.match(/proposals\/(\d+)/) || [])[1]).filter(Boolean))
       const before = ids.size; got.forEach(x => ids.add(x)); if (ids.size === before) break

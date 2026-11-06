@@ -77,16 +77,21 @@ case $rc in 0) kiroku "5 返事（メール）✅ $(echo "$out" | tail -1)" ;; 1
 if [ $NOBR -eq 1 ]; then kiroku "5 返事（サイト）─ --no-browser なので見ていない（応募の部屋にだけ届く便がある）"
 else
   curl -s -m 5 "$CDP/json/version" >/dev/null || tomaru 返事の見張り "ブラウザ（$CDP）につなげない。ログイン済みの Chrome を --remote-debugging-port で起こすか、--no-browser で飛ばす"
-  out=$(jikan 900 node "$T/cw-thread-check.cjs" --atarashii 2>&1); rc=$?
-  case $rc in 0) kiroku "5 返事（CW の部屋）✅ $(echo "$out" | tail -1)" ;; 1) YOU=1; kiroku "5 返事（CW の部屋）🔔 $(echo "$out" | grep -c '^要返信') 件"; echo "$out" | grep '^要返信' ;;
-    *) tomaru 返事の見張り "cw-thread-check.cjs rc=$rc ／ $(echo "$out" | tail -1)" ;; esac
   prev=$(ls "$DATA"/cw-joutai-*.tsv 2>/dev/null | sort | tail -1); now="$DATA/cw-joutai-$(date +%Y%m%d-%H%M).tsv"
-  out=$(jikan 600 node "$T/cw-oubo-joutai.cjs" "$now" 2>&1); rc=$?
+  out=$(jikan 600 node "$T/cw-oubo-joutai.cjs" "$now" 2>&1); rc=$?; JOK=0; JERR=""; [ $rc -eq 0 ] && JOK=1
   if [ $rc -eq 3 ]; then kiroku "5 状態一覧 🟡 途中で切れた見込み・控えにしない（$(echo "$out" | tail -1)）"
-  elif [ $rc -ne 0 ]; then tomaru 返事の見張り "cw-oubo-joutai.cjs rc=$rc ／ $(echo "$out" | tail -1)"
+  elif [ $rc -ne 0 ]; then JERR="cw-oubo-joutai.cjs rc=$rc ／ $(echo "$out" | tail -1)"; kiroku "5 状態一覧 🔴 読めない（部屋は全部開いて見てから止める）"
   elif [ -n "$prev" ] && [ "$prev" != "$now" ]; then h=$(python3 "$T/cw-joutai-hikaku.py" --naru "$prev" "$now"); rc=$?
     if [ $rc -eq 1 ]; then YOU=1; kiroku "5 状態一覧 🔔 契約・条件など状態が変わった"; echo "$h"; elif [ $rc -ne 0 ]; then tomaru 返事の見張り "cw-joutai-hikaku.py rc=$rc"; else kiroku "5 状態一覧 ✅ $(echo "$out" | head -1)"; fi
   else kiroku "5 状態一覧 ✅ 初回の控え（$(echo "$out" | head -1)）"; fi
+  # 部屋は一覧のあとに見る：最終更新が今日か前の控えから変わった応募だけ開く（全部開くと1周10分ほど）。6回に1回と一覧が読めなかった回は全部
+  KAI=$(( $(cat "$DATA/junkai/thread-kai.txt" 2>/dev/null || echo 0) + 1 )); mkdir -p "$DATA/junkai"; echo $KAI > "$DATA/junkai/thread-kai.txt"; IDS=""; HIROSA=全部
+  if [ $JOK -eq 1 ] && [ -s "$now" ] && [ -n "$prev" ] && [ "$prev" != "$now" ] && [ $((KAI % 6)) -ne 1 ]; then IDS=$(python3 "$T/cw-thread-erabu.py" "$prev" "$now"); HIROSA="絞り $(echo -n "$IDS" | tr ',' '\n' | grep -c .)件"; fi
+  if [ "$HIROSA" = "絞り 0件" ]; then kiroku "5 返事（CW の部屋）✅ 開く部屋 0件 ／ 一覧 $(( $(wc -l < "$now") - 1 )) 行（最終更新の変わった応募なし）"
+  else out=$(IDS="$IDS" jikan 900 node "$T/cw-thread-check.cjs" --atarashii 2>&1); rc=$?
+  case $rc in 0) kiroku "5 返事（CW の部屋・$HIROSA）✅ $(echo "$out" | tail -1)" ;; 1) YOU=1; kiroku "5 返事（CW の部屋・$HIROSA）🔔 $(echo "$out" | grep -c '^要返信') 件"; echo "$out" | grep '^要返信' ;;
+    *) tomaru 返事の見張り "cw-thread-check.cjs rc=$rc ／ $(echo "$out" | tail -1)" ;; esac; fi
+  [ -n "$JERR" ] && tomaru 返事の見張り "$JERR"
 fi
 
 # 6 出し漏れの検算
