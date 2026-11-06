@@ -19,6 +19,9 @@
 ## 手順（エージェント）
 1. オーナーに問診票の1通（monshinhyou.md の末尾）を送り、答えを受け取る。答えはリポジトリの外か .gitignore された置き場に置く
 2. ポートフォリオの見本を先に作る（templates/portfolio/ の「作り方」をそのまま自分に渡す）。公開の頁に置き、一覧の頁の URL を {見本のURL} に使う
+   - 公開の置き場（実例）：Cloudflare Pages の無料枠に1つの見本サイト（例 `<名前>.pages.dev`）を作り、案件の型ごとに頁を足す（/lp/・/video/ など）。出すのは `npx wrangler pages deploy <フォルダ> --project-name <名前>`。アカウントを作る所（メールの確認）だけオーナーの手が要る。鍵（API トークン）は Pages の編集の権限だけにして、置き場の外（鍵束）に置く
+   - 出す前に `python3 tools/mihon-kensa.py <フォルダ>`（docs/05）。出した後は公開の頁を開き、題名と1行目が出ているかを確かめてから {見本のURL} に使う
+   - 経歴なしでも再現：する（GitHub Pages など他の無料の置き場でもよい・費用0円）
 3. 場の型の {穴} を問診票の答えで埋める。空でよい欄が空なら、その穴がある行ごと消す。空でよくない欄が空なら作らずに聞き直す
 4. 字数を数える（下の表）。CW は改行を2字で数える
 5. 門を通す：`node -e "require('./tools/manner-mon.cjs')(require('fs').readFileSync('<埋めた文>','utf8'),'oubo')"` と、jisseki-mon.cjs（成果の言い方）。🔴 が1つでも出たら直す
