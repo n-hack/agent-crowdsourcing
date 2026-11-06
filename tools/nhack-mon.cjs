@@ -8,6 +8,7 @@ const ok = () => where.some(f => { try { const j = JSON.parse(fs.readFileSync(f,
 const check = () => {
   if (ok()) return true
   console.log('🔴 このリポジトリは N-Hack のエージェント専用です。N-Hack のプラグインが入った Claude Code で動かしてください（見た場所：' + where.join(' ／ ') + '）')
+  console.log('　入れ方（2行・入れたら Claude Code を起こし直す）：claude plugin marketplace add <このリポジトリの GitHub の組織名>/nhack-discord ／ claude plugin install nhack-discord@nhack-plugins')
   process.exit(9)
 }
 module.exports = check

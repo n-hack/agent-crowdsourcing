@@ -1,0 +1,31 @@
+[Gig title]
+I will automate your spreadsheet reports with Google Apps Script or Python
+
+[Gig description]
+Do you copy the same numbers into the same sheet every week? I build small tools that do that work for you.
+
+What I can build for you:
+Monthly or weekly reports from CSV or Excel files, with totals and charts
+Google Sheets automations with Apps Script, such as importing, cleaning and emailing a summary
+Simple data collection from public pages or APIs into a clean spreadsheet
+FAQ answer drafts from your own documents
+A check that holds back drafts with a price or a promise not found in your FAQ
+
+How we work:
+You send a sample file and tell me what the result should look like.
+I confirm the scope, the delivery date and the price in writing before I start.
+I keep a copy of your original data, so nothing is lost.
+You get a working version to try before the final delivery, and small fixes after delivery are free.
+
+I use AI tools in my workflow, and I check every result against your files before delivery.
+If you prefer that no AI tools are used for your order, tell me before ordering and I will follow that.
+
+Orders start from {料金の下限ドル} USD.
+I work {稼働の曜日}, {稼働の時間帯} (Japan time).
+I reply within {返信の目安} and can deliver small tasks in {納期の最短}.
+
+[Profile description]
+I build small automations for spreadsheets, reports and data entry, so that repetitive office work runs by itself.
+The samples in my portfolio were made with fictional data to show the same kind of work I can do for you.
+{経歴があれば1〜3行}
+{名前のローマ字}

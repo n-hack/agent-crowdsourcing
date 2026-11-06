@@ -1,7 +1,7 @@
 #!/bin/bash
 # 【入口】1日の回し方を1コマンドで1周：巡回 → 門 → 応募文（下書き）→ 応募（--go のときだけ送る）→ 返事の見張り → 出し漏れの検算
 # 入力: config/profile.json（置き場・CDP・巡回の語・メールの見張り）／環境変数 CS_DATA・CS_PROFILE・CS_CDP_URL ／ --go（送る）・--no-browser（ログインの要る段を飛ばす）
-# 出力: 段ごとの1行と、要対応（新しい返事・要返信・状態の変化・出し漏れ）の中身。<置き場>/mawasu.log に段ごとの1行
+# 出力: 段ごとの1行と、要対応（新しい返事・要返信・状態の変化・出し漏れ）の中身。<置き場>/mawasu.log に段ごとの1行。門の全行は <置き場>/junkai/mon-YYYYMMDD-HHMM.txt
 # 止まる条件: どれかの段の道具が落ちたら、その段の名前と理由を出して rc=2 で止まる。1周が通り要対応が無ければ rc=0／要対応ありは rc=1
 # 呼び方: bash tools/mawasu.sh [--go] [--no-browser]（長いので裏で回す・繰り返すなら終わるたびに呼び直す）
 T="$(cd "$(dirname "$0")" && pwd)"; cd "$T/.." || exit 2
@@ -29,7 +29,8 @@ if [ "$n" -gt 0 ]; then
   out=$(python3 "$T/cw-tantei.py" "$f" 2>&1); rc=$?
   [ $rc -ne 0 ] && tomaru 門 "cw-tantei.py rc=$rc ／ $(echo "$out" | tail -2 | tr '\n' ' ')"
   hoshi=$(echo "$out" | grep '^★ ')
-  kiroku "2 門 ✅ $(echo "$out" | tail -1)"
+  echo "$out" > "$DATA/junkai/mon-$(basename "$f" .tsv).txt"   # 門の全行（★＝応募文へ・☆＝読んで決める・印なし＝落ちた理由つき）
+  kiroku "2 門 ✅ $(echo "$out" | tail -1)（全行は junkai/mon-$(basename "$f" .tsv).txt）"
 else kiroku "2 門 ─ 候補 0 件（巡回の新着なし）"; fi
 
 # 3 応募文（下書き。中身の穴は残る＝エージェントが本文を読んで埋める）

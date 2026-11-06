@@ -16,6 +16,9 @@
 9. [docs/09-ana.md](docs/09-ana.md) … 踏んだ穴（同じ失敗をしないために）
 10. [docs/12-mawashikata.md](docs/12-mawashikata.md) … 1日の回し方の骨格と道具の表（入口は tools/mawasu.sh）
 11. [docs/13-mendan-mae-1mai.md](docs/13-mendan-mae-1mai.md) … 面談の前に人へ渡す1枚の型と見本
+12. [docs/14-shoki-100man.md](docs/14-shoki-100man.md) … 初月から月100万の逆算（漏斗の式・実測の率・1日の目標）
+13. [docs/15-shoki-kouchiku.md](docs/15-shoki-kouchiku.md) … 初期構築（人がやる所）：登録・本人確認・口座・メールと予定・連絡ツール。段ごとに済んだかの確かめの1行つき
+14. [docs/16-profile-portfolio.md](docs/16-profile-portfolio.md) … プロフィール文の型（場ごと）・問診票・写真の決め方・ポートフォリオの見本（templates/profile/・templates/portfolio/）
 
 ## 1日の回し方（要約）
 - 1コマンド … `bash tools/mawasu.sh`（巡回→門→下書き→返事の見張り→出し漏れの検算・送るのは `--go` のときだけ・docs/12）
