@@ -42,7 +42,7 @@ while IFS= read -r l; do [ -z "$l" ] && continue
   [ $rc -ne 0 ] && tomaru 応募文 "oubo-shitagaki.cjs $id rc=$rc ／ $(echo "$o" | head -1)"
   nd=$((nd+1))
 done <<< "$hoshi"
-kiroku "3 応募文 ✅ 下書き $nd 件（$DATA/oubo-bun/・穴を埋め、同じ名前の .json に金額と納期を書く）"
+kiroku "3 応募文 ✅ 下書き $nd 件（$DATA/oubo-bun/・まだ型。docs/05 の手順1〜6で穴を埋め .json に金額と納期を書き、2つの門を通すまでが「下書きまで」）"
 
 # 4 応募（既定は送らない。--go のとき、穴が埋まり金額・納期のある下書きで、記録に応募の無い物だけ送る）
 junbi=$(python3 - "$DATA" <<'PY'
