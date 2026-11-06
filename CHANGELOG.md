@@ -75,3 +75,4 @@
 - 2026-11-06：docs/14 初月から月100万の逆算（式と最初の実測の率・1日の応募の目標）
 - 2026-11-06 13:41 自動更新： 2 files changed, 9 insertions(+), 5 deletions(-)（知見 +4行）
 - 2026-11-06 初期構築の章（docs/15・人がやる所と確かめの1行・tools/shoki-kakunin.cjs）／プロフィールとポートフォリオの章（docs/16・templates/profile/・templates/portfolio/）／再現の試しの不足を直した（docs/00 に問診票とプラグインの入れ方・nhack-mon の止まる文・docs/12 に終わりの受け方と門を通った ID の置き場と playwright の確かめ・mawasu.sh が門の全行を junkai/mon-*.txt に残す）
+- 2026-11-06 samples/ に見本 01・02・03 の実物（架空の題材・動かした出力つき）を置き、docs/16 と templates/portfolio から張った

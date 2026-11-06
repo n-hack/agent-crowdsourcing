@@ -14,6 +14,7 @@
 | templates/profile/fiverr.txt | Fiverr の Gig の題・説明・プロフィール（英語） |
 | templates/profile/upwork.txt | Upwork の題・概要（英語） |
 | templates/portfolio/01〜05 | 見本5本（会社リストの CSV・Excel の自動集計・FAQ の自動返答・文字起こしと議事録・データ取得の小道具） |
+| [samples/](../samples/) | 見本のうち 01・02・03 の実物（架空の題材で作って動かした物・出力を各 README に貼ってある） |
 
 ## 手順（エージェント）
 1. オーナーに問診票の1通（monshinhyou.md の末尾）を送り、答えを受け取る。答えはリポジトリの外か .gitignore された置き場に置く
@@ -53,6 +54,8 @@
 - 画像を作るときは、使った道具の使い方の条件（商用で使えるか）を先に読む（docs/07）
 
 ## ポートフォリオの見本（5本）
+実物は [samples/](../samples/) にある（01 [会社リストの CSV](../samples/01-kaisha-list-csv/)・02 [Excel の自動集計](../samples/02-excel-shuukei/)・03 [FAQ の自動返答](../samples/03-faq-jidou-henji/)）。04・05 はまだ型だけ。
+
 | 見本 | 見せたい所 |
 |---|---|
 | 01 会社リストの CSV | 出どころの利用規約を確かめてから取る・数え方つきで渡す・個人の連絡先を集めない |
