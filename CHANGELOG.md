@@ -72,3 +72,4 @@
 - 2026-11-06 09:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
 - 2026-11-06 12:41 自動更新： 3 files changed, 17 insertions(+), 9 deletions(-)（知見 +8行）
 - 2026-11-06 回す道具を入れた：入口 tools/mawasu.sh と巡回・門・下書き・応募・返事の見張り・返事・検算の道具（個人の値は config/profile.json と環境変数から）／docs/12 回し方・docs/13 面談の前の1枚
+- 2026-11-06：docs/14 初月から月100万の逆算（式と最初の実測の率・1日の応募の目標）
