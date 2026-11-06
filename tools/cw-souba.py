@@ -22,8 +22,28 @@ if '--obi' in a:
         sys.exit(f'🔴 --obi {"-".join(map(str, obi))} は帯になっていない（上限が0以下か下限が上限より上）。帯の無い（相談の）募集なら --obi を付けずに打つ')
 if '--id' in a:
     i = a.index('--id'); skip = a[i + 1]; a = a[:i] + a[i + 2:]
-if not a:
+if not a or a[0] in ('-h', '--help'):
     print(__doc__); sys.exit(2)
+if skip:  # 試し9回目：帯の無い募集に作った帯（--obi 0-82500）を付けても止まらなかった → 公開頁の帯と --obi を照らす
+    try:
+        pj = urllib.request.urlopen(urllib.request.Request('https://crowdworks.jp/public/jobs/' + skip, headers={'User-Agent': 'Mozilla/5.0'}), timeout=30).read().decode('utf-8', 'ignore')
+        pj = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', re.sub(r'<script[\s\S]*?</script>|<style[\s\S]*?</style>', ' ', pj))).replace('&nbsp;', ' ')
+    except Exception as e:
+        pj = None; print('🟡 公開頁が読めず、帯は照らせない', e)
+    if pj is not None:
+        g = re.search(r'固定報酬制\s*(?:([\d,]+)\s*円\s*)?(〜\s*(?:([\d,]+)\s*円)?)?', pj)
+        y = lambda v: int(v.replace(',', ''))
+        if g and (g.group(1) or g.group(3)):
+            pobi = [y(g.group(1)) if g.group(2) and g.group(1) else 0, y(g.group(3)) if g.group(3) else (y(g.group(1)) if not g.group(2) else 0)]
+            if pobi[1] == 0: pobi = None  # 「5,000円 〜」（上限なし）は帯として使わない
+        else:
+            pobi = None
+        if pobi and not obi:
+            sys.exit(f'🔴 {skip} は帯のある募集（公開頁 {pobi[0]:,}〜{pobi[1]:,}円）。--obi {pobi[0]}-{pobi[1]} を付けて打ち直す')
+        if obi and not pobi:
+            sys.exit(f'🔴 {skip} の公開頁に帯が無い（相談・時給・上限なし）。--obi を外して打ち直す')
+        if obi and pobi and obi != pobi:
+            sys.exit(f'🔴 --obi {obi[0]}-{obi[1]} が公開頁の帯 {pobi[0]}-{pobi[1]} と違う。頁の帯で打ち直す')
 a = [w for x in a for w in x.split()]  # 「Shopify 保守」を1つで渡されても語に分ける
 kw = ' '.join(a)
 url = ('https://crowdworks.jp/public/jobs/search?keep_search_criteria=true&order=new&hide_expired=false&search%5Bkeywords%5D=' + urllib.parse.quote(kw))
