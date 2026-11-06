@@ -42,9 +42,9 @@ while IFS= read -r l; do [ -z "$l" ] && continue
   [ $rc -ne 0 ] && tomaru 応募文 "oubo-shitagaki.cjs $id rc=$rc ／ $(echo "$o" | head -1)"
   nd=$((nd+1))
 done <<< "$hoshi"
-kiroku "3 応募文 ✅ 下書き $nd 件（$DATA/oubo-bun/・まだ型。docs/05 の手順1〜6で穴を埋め .json に金額と納期を書き、2つの門を通すまでが「下書きまで」）"
+kiroku "3 応募文 ✅ 下書き $nd 件（$DATA/oubo-bun/・まだ型。docs/05 の手順1〜6で穴と型の行を募集に合わせて埋め、.json に金額と納期を書き、node tools/shitagaki-kakunin.cjs が ✅ を出すまでが「下書きまで」）"
 
-# 4 応募（既定は送らない。--go のとき、穴が埋まり金額・納期のある下書きで、記録に応募の無い物だけ送る）
+# 4 応募（既定は送らない。--go のとき、穴が埋まり金額・納期があり確かめを通った下書きで、記録に応募の無い物だけ送る）
 junbi=$(python3 - "$DATA" <<'PY'
 import json, pathlib, re, sys
 d = pathlib.Path(sys.argv[1]); k = d / 'oubo-kiroku.tsv'
@@ -59,6 +59,9 @@ for j in sorted((d / 'oubo-bun').glob('cw-*.json')) if (d / 'oubo-bun').exists()
     if m.get('金額') and m.get('納期'): print('\t'.join([m['案件ID'], str(t), str(m['金額']), str(m['納期'])]))
 PY
 )
+# 送れる下書きは、確かめ（shitagaki-kakunin.cjs：穴・型の行・宛名・金額と帯・2つの門）を通った物だけ
+junbi=$(while IFS=$'\t' read -r id txt kin nou; do [ -z "$id" ] && continue
+  node "$T/shitagaki-kakunin.cjs" "$txt" >/dev/null 2>&1 && printf '%s\t%s\t%s\t%s\n' "$id" "$txt" "$kin" "$nou"; done <<< "$junbi")
 nj=$(echo -n "$junbi" | grep -c .)
 if [ $GO -eq 1 ] && [ $NOBR -eq 0 ] && [ "$nj" -gt 0 ]; then
   ok=0; ng=0

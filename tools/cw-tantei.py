@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """【門】巡回の候補（cw-junkai.py の tsv）の募集本文を開き、分野・できるか・勧誘・二重応募の門と、取らない条件の語を当てる（ログインなし・読むだけ）
 入力: 巡回の tsv（引数・無ければ <置き場>/junkai/ の一番新しい巡回の結果）／応募の記録（記録にある ID は外す）
-取らない条件: 定例・出社・営業・現地・勧誘の型・AI 不可・CW テック（本文のどこでも）／年齢・地域・資格の保有・実機・経験年数・SES と再委託・副業不可（必須・条件の欄だけ。歓迎・尚可の欄は数えない）
+取らない条件: 定例・出社・営業・現地・勧誘の型・AI 不可・AI で書いた応募は不可・CW テック・納期が過ぎている・募集が終わっている・上限が千円に届かない額（本文と頁のどこでも）／年齢・地域・資格の保有・実機・経験年数・経験（年数なし）・実績の提示・SES と再委託・副業不可（必須・条件の欄だけ。歓迎・尚可の欄は数えない）
 出力: 候補ごとに1行。頭が「★」＝🔴が1つも無く分野の門が✅（応募文に進む）／「☆」＝🔴なしで分野🟡（中身を読んで決める・<置き場>/junkai/kouho-kiiro.tsv に残す）／印なし＝落ちた理由つき。最後の行に数
 止まる条件: 門が候補の数だけ答えないとき rc=3（照らせていないのに通さない）。開けない頁はその1件だけ飛ばす
 呼び方: python3 tools/cw-tantei.py [巡回の tsv]
 """
-import csv, html, json, os, pathlib, re, subprocess, sys, time, urllib.request
+import csv, datetime as dt, html, json, os, pathlib, re, subprocess, sys, time, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import settei as S
 S.mon()
@@ -28,7 +28,7 @@ R = [('🔴定例', r'定例|MTG|ミーティング|報告会|打ち合わせ.{0
      ('🔴AI不可', r'生成AIの使用は避け|AI.{0,8}(使用)?(禁止|不可|NG)|文章作成ツール[^。]{0,20}自動生成|自動生成された(もの|物|文章)'),
      ('🔴CWテック', r'クラウドワークス テック事務局|受託企業さまへのお仕事の紹介はできません'),
      ('🟡URL必須', r'(URL|ポートフォリオ)[^。]{0,8}必須|必須[^。]{0,8}(URL|ポートフォリオ)')]
-# ── 応募できない条件（必須・条件の欄の語。docs/05「応募できない募集の見分け方」）。本文を見出し（【…】・■◆▼●□◇◎）で区切り、
+# ── 応募できない条件（必須・条件の欄の語。docs/05「応募できない募集の見分け方」）。本文を見出し（【…】・＜…＞・■◆▼●□◇◎✅▮◤）で区切り、
 #    見出しか1文に「歓迎・尚可・あれば・優遇・不問…」がある所は数えない（その1文に「必須」があれば数える）。🔴は落とす
 HISSU = [('🔴年齢・地域', r'\d{2}\s*歳\s*(?:[〜~～\-－]|から)\s*\d{2}\s*歳|\d{2}\s*(?:代|歳)?\s*[〜~～\-－ー]\s*\d{2}\s*(?:代|歳)[^。]{0,6}(?:の方|まで|限定)'
                        r'|(?:2[5-9]|[3-9]\d)\s*歳以上[^。]{0,6}の方|\d{2}\s*歳(?:以下|まで|未満)[^。]{0,6}の方|\d{2}代(?:限定|の方のみ)|日本国籍'
@@ -38,20 +38,58 @@ HISSU = [('🔴年齢・地域', r'\d{2}\s*歳\s*(?:[〜~～\-－]|から)\s*\d{
          ('🔴実機', r'実機[^。]{0,15}(?:必須|お持ち|所有|が必要|が要|をご用意|で(?:の)?(?:確認|テスト|検証|動作))|(?:iPhone|Android|Mac|Windows\s?PC)[^。]{0,10}(?:をお持ちの方|の所有|必須)'),
          ('🔴経験年数', r'(?:経験|実務|開発)[^。]{0,12}\d+\s*年以上|\d+\s*年以上の[^。]{0,8}経験'),
          ('🔴SES・再委託', r'SES|スキルシート|[0-9０-９.]+\s*人月|人月単価|二次請け|三次請け|再委託(?:案件|での参画|先として)'),
-         ('🔴副業不可', r'副業(?:不可|NG|禁止|はご遠慮|の方は不可)|専業の方|専任の方(?:のみ)?|本業として')]
-YURUI = r'歓迎|尚可|あれば|優遇|望まし|なくても|不問|不要|問いません|未満の方も|でなくても|以外の方も'
-MIDASHI = r'(【[^】]{1,24}】|[■◆▼●□◇◎]\s?[^\s。]{1,24})'
+         ('🔴副業不可', r'副業(?:不可|NG|禁止|はご遠慮|の方は不可)|専業の方|専任の方(?:のみ)?|本業として'),
+         ('🔴経験必須', r'(?<!未)経験(?:者)?[^。]{0,4}[（(]必須|(?<!未)経験(?:者|が|は)?必須|(?<!未)経験者(?:のみ|限定)|(?<!未)経験[^。]{0,6}方を対象'
+                       r'|(?:応募条件|応募資格|必須条件|必須スキル|必須の経験|必須要件|＜必須＞|MUST)[】）>\]\s:：]*[^。【]{0,40}?(?<!未)(?<!使用)(?<!利用)経験(?!談|不問|は問|の有無|がなくても|がない方も|に応じ)'),
+         ('🔴実績必須', r'(?:実績|(?<!ビジネス)ポートフォリオ|作品)[^。]{0,15}必須|必須[^。]{0,4}(?:実績|(?<!ビジネス)ポートフォリオ)|(?:実績|(?<!ビジネス)ポートフォリオ)[^。]{0,10}(?:のある|がある|をお持ちの)方(?:のみ|限定)'
+                       r'|(?:実績|(?<!ビジネス)ポートフォリオ)[^。]{0,10}(?:ない|無い)方[^。]{0,10}(?:不可|ご遠慮|お断り|対象外|採用しません)')]
+# 必須の欄（見出しか、短い1文の小見出し）の中で、経験・実績を書いた1文は年数が無くても落とす（「使用経験」は型F＝見本を作って出せるので落とさない）
+HISSU_RAN = r'必須|応募条件|応募資格|MUST|対象者|求める方'
+TOU = r'ご回答|ご記載|ご記入|お答え|教えて|お知らせ|ますか|[？?]'
+RAN_KEIKEN = [('🔴経験必須', r'(?<!未)(?<!使用)(?<!利用)経験(?!談|不問|は問|の有無|がなくても|がない方も|に応じ|があれば)'), ('🔴実績必須', r'実績|(?<!ビジネス)ポートフォリオ')]
+# 本文のどこでも見る：AI で書いた応募は取らない／納期が今日より前（年が無い日付は、今日より前で半年以内なら今年・それより前なら来年と読む）
+HON = [('🔴AI応募不可', r'(?:AI|ＡＩ|Bot|bot|ChatGPT)[^。]{0,12}(?:使用|利用|使っ|作成|生成)[^。]{0,6}(?:と思われる|が疑われる|と判断(?:した|される))'
+                     r'|(?:AI|ＡＩ|Bot|bot|ChatGPT)[^。]{0,15}(?:応募|提案|応募文)[^。]{0,12}(?:不可|お断り|ご遠慮|採用(?:致|いた)?しかね|採用しません|対象外|NG|禁止|無効)')]
+KIGEN = r'(?:納期|締切|締め切り|〆切|納品日|納品希望日)[】\]）)\s:：は]{0,4}(?:(20\d{2})\s*[年/.\-]\s*)?(\d{1,2})\s*[月/]\s*(\d{1,2}|末)'
+def kigen_kire(body, kyou):
+    """本文の納期・締切の日付が kyou（datetime.date）より前なら印を返す"""
+    import datetime as dt
+    for m in re.finditer(KIGEN, body):
+        y, mo, d = m.group(1), int(m.group(2)), m.group(3)
+        if not 1 <= mo <= 12: continue
+        yy = int(y) if y else kyou.year
+        try:
+            dd = (dt.date(yy + mo // 12, mo % 12 + 1, 1) - dt.timedelta(days=1)).day if d == '末' else int(d)
+            hi = dt.date(yy, mo, dd)
+        except ValueError: continue
+        if not y and hi < kyou and (kyou - hi).days > 183: continue  # 年が無く半年より前＝来年の日付と読む
+        if hi < kyou: return f'🔴納期切れ:{m.group(0)[:20]}'
+    return None
+def gokushou(yosan, body):
+    """固定報酬の上限（巡回の tsv の「固定0-110.0」・税込）か本文の契約金額が千円に届かないなら印を返す"""
+    m = re.match(r'固定[\d.]+-([\d.]+)', yosan or '')
+    if m and 0 < float(m.group(1)) < 1000: return f'🔴極小額:上限{float(m.group(1)):.0f}円'
+    m = re.search(r'契約金額[^。\d]{0,12}?([1-9]\d{0,2})\s*円', body)
+    if m and not re.search(r'時給|件|あたり|につき|文字|[/／]', body[max(0, m.start() - 10):m.end() + 12]): return f'🔴極小額:{m.group(0)[:20]}'  # 1件◯円・1文字◯円の単価は数えない
+    return None
+YURUI = r'歓迎|尚可|あれば|優遇|望まし|なくても|不問|不要|問いません|未満の方も|でなくても|以外の方も|必須で(?:は|も)(?:ありません|ない|なく)|必要(?:ありません|ない|はありません)'
+HISSU_DE_NAI = r'必須で(?:は|も)(?:ありません|ない|なく)'
+MIDASHI = r'(【[^】]{1,24}】|(?<!「)＜[^＞]{1,24}＞|[■◆▼●□◇◎✅▮◤]\s?[^\s。]{1,24})'
 def hissu(body):
     """本文から、応募できない条件の印（🔴…:読んだ語）を返す。歓迎・尚可の欄の語は数えない"""
     marks, h = [], ''
+    def put(n, m, bun=None):
+        if m and not any(x.startswith(n) for x in marks): marks.append(f'{n}:{(bun or m.group(0)).strip()[:20]}')
     for p in re.split(MIDASHI, body):
         if re.fullmatch(MIDASHI, p or ''): h = p; continue
         if re.search(YURUI, h): continue
+        ran = bool(re.search(HISSU_RAN, h))  # 見出しが必須の欄
         for s in re.split(r'。|\s[・※★\-－]\s?|\s[0-9０-９][\.．)）]\s', p):
-            if re.search(YURUI, s) and '必須' not in s: continue
-            for n, rx in HISSU:
-                m = re.search(rx, s)
-                if m and not any(x.startswith(n) for x in marks): marks.append(f'{n}:{m.group(0)[:20]}')
+            if len(s.strip()) <= 20 and re.search(HISSU_RAN, s) and not re.search(YURUI, s): ran = True  # 「＜必須＞」「■必須条件」のような短い小見出し
+            if re.search(YURUI, s) and '必須' not in re.sub(HISSU_DE_NAI, '', s): ran = False; continue  # 歓迎の1文から後は必須の欄として読まない
+            for n, rx in HISSU: put(n, re.search(rx, s))
+            if ran and not re.search(TOU, s):  # 「ご回答ください」「ありますか？」＝聞いているだけの1文は除く
+                for n, rx in RAN_KEIKEN: put(n, re.search(rx, s), s)  # 印には当たった1文の頭を出す
     return marks
 # ── ここまで
 rows = [r for r in csv.reader(open(f, encoding='utf-8'), delimiter='\t')][1:]
@@ -81,6 +119,9 @@ for r, x in got:
     k = body.rfind('この仕事の特徴'); body = body[:k] if k > len(body) - 200 else body  # 終わりに CW が自動で付ける札（スキマ時間歓迎 など）を外す
     marks = [n for n, rx in R if re.search(rx, body)]
     marks += hissu(body)
+    marks += [n for n, rx in HON if re.search(rx, body)]
+    marks += [k for k in (kigen_kire(body, dt.date.today()), gokushou(r[2], body)) if k]
+    if 'このお仕事の募集は終了しています' in x: marks.append('🔴募集終了')
     a = mon.get(jid, [jid, '?', '', ''])
     g = a[1]
     if g == '🔴': marks.append('🔴分野'); aka += 1

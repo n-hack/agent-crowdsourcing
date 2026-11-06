@@ -13,7 +13,9 @@ const D = path.join(S.DATA, 'oubo-bun'); fs.mkdirSync(D, { recursive: true })
 const F = path.join(D, `${ba}-${id}.txt`), J = path.join(D, `${ba}-${id}.json`)
 if (!fs.existsSync(F)) {
   const kata = fs.readFileSync(path.join(__dirname, '..', 'templates', 'oubo-kihon.txt'), 'utf8')
-  fs.writeFileSync(F, kata.replace('{依頼主}', aite && aite !== '-' ? aite : 'ご担当者').replace('{名乗り}', nanori).replace('{署名}', shomei))
+  // 宛名（docs/05 の宛名の決め方）：表示名をそのまま写す。会社の形（株式会社など）が付いた表示名は「<表示名> ご担当者様」・分からなければ「ご担当者様」
+  const atena = !aite || aite === '-' ? 'ご担当者様' : /(株式会社|有限会社|合同会社|社団法人|財団法人|\(株\)|（株）)/.test(aite) ? aite + ' ご担当者様' : aite + '様'
+  fs.writeFileSync(F, kata.replace('{依頼主}様', atena).replace('{名乗り}', nanori).replace('{署名}', shomei))
   console.log('下書きを作った', F)
 } else console.log('下書きは既にある（上書きしない）', F)
 if (!fs.existsSync(J)) fs.writeFileSync(J, JSON.stringify({ 場: ba, 案件ID: id, 題名: dai || '', 金額: null, 納期: null, 計画の題名: '', 計画: '', メモ: '金額は税抜・納期は YYYY-M-D。ランサーズは 計画の題名（20字以内）と 計画 も埋める' }, null, 1) + '\n')
