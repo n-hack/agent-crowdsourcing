@@ -26,7 +26,7 @@ if [ "$n" -gt 0 ]; then
   out=$(python3 "$T/cw-tantei.py" "$f" 2>&1); rc=$?
   [ $rc -ne 0 ] && tomaru 門 "cw-tantei.py rc=$rc ／ $(echo "$out" | tail -2 | tr '\n' ' ')"
   hoshi=$(echo "$out" | grep '^★ ')
-  echo "$out" > "$DATA/junkai/mon-$(basename "$f" .tsv).txt"   # 門の全行（★＝応募文へ・☆＝読んで決める・印なし＝落ちた理由つき）
+  # 門の全行（★＝応募文へ・☆＝読んで決める・印なし＝落ちた理由つき）は cw-tantei.py 自身が junkai/mon-<tsv の名>.txt に1件ずつ書く（単独で打っても・途中で止まっても残る）
   kiroku "2 門 ✅ $(echo "$out" | tail -1)（全行は junkai/mon-$(basename "$f" .tsv).txt）"
 else kiroku "2 門 ─ 候補 0 件（巡回の新着なし）"; fi
 

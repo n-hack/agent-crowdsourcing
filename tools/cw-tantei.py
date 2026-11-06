@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """【門】巡回の候補（cw-junkai.py の tsv）の募集本文を開き、分野・できるか・勧誘・二重応募の門と、取らない条件の語を当てる（ログインなし・読むだけ）
 入力: 巡回の tsv（引数・無ければ <置き場>/junkai/ の一番新しい巡回の結果）／応募の記録（記録にある ID は外す）
-取らない条件: 定例・出社・営業・現地・勧誘の型・AI 不可・AI で書いた応募は不可・CW テック・納期が過ぎている・募集が終わっている・上限が千円に届かない額（本文と頁のどこでも）／年齢・地域・資格の保有・実機・経験年数・経験（年数なし）・実績の提示（作品の URL【必須】を含む）・外国語の会話や読み書きの条件・SES と再委託・副業不可（必須・条件の欄だけ。歓迎・尚可の欄は数えない。歓迎が括弧の中の言い添えだけの1文は必須として数える）
-出力: 候補ごとに1行。頭が「★」＝🔴が1つも無く分野の門が✅（応募文に進む）／「☆」＝🔴なしで分野🟡（中身を読んで決める・<置き場>/junkai/kouho-kiiro.tsv に残す）／印なし＝落ちた理由つき。最後の行に数
-止まる条件: 門が候補の数だけ答えないとき rc=3（照らせていないのに通さない）。開けない頁はその1件だけ飛ばす
-呼び方: python3 tools/cw-tantei.py [巡回の tsv]
+取らない条件: 定例・出社・営業・現地・勧誘の型・AI 不可・AI で書いた応募は不可・CW テック・納期が過ぎている・募集が終わっている・上限が千円に届かない額（本文と頁のどこでも）／年齢・地域・資格の保有・実機・経験年数・経験（年数なし）・実績の提示（作品の URL【必須】を含む）・外国語の会話や読み書きの条件・SES と再委託・副業不可（必須・条件の欄だけ。歓迎・尚可の欄は数えない。歓迎が括弧の中の言い添えだけの1文は必須として数える）。年齢・地域・資格などこの欄の条件は題名にも当てる（条件が題名にしか無い募集がある）
+出力: 候補ごとに1行（1件開くたびに出し、<置き場>/junkai/mon-<巡回の tsv の名>.txt にも同じ行を書き足す）。頭が「★」＝🔴が1つも無く分野の門が✅（応募文に進む）／「☆」＝🔴なしで分野🟡（中身を読んで決める・<置き場>/junkai/kouho-kiiro.tsv に残す）／印なし＝落ちた理由つき。最後の行に数
+止まる条件: 門が答えないとき・分野の門が照らせない頁（本文の始まりが無い）が1件でもあるとき rc=3（照らせていないのに通さない）。開けない頁はその1件だけ飛ばす
+呼び方: python3 tools/cw-tantei.py [巡回の tsv] ／ 100件で3分ほどかかるので裏で回す（docs/12）
 """
 import csv, datetime as dt, html, json, os, pathlib, re, subprocess, sys, time, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -34,8 +34,9 @@ R = [('🔴定例', r'定例|MTG|ミーティング|報告会|打ち合わせ.{0
 #    見出しか1文に「歓迎・尚可・あれば・優遇・不問…」がある所は数えない（その1文に「必須」があれば数える）。🔴は落とす
 HISSU = [('🔴年齢・地域', r'\d{2}\s*歳\s*(?:[〜~～\-－]|から)\s*\d{2}\s*歳|\d{2}\s*(?:代|歳)?\s*[〜~～\-－ー]\s*\d{2}\s*(?:代|歳)[^。]{0,6}(?:の方|まで|限定)'
                        r'|(?:2[5-9]|[3-9]\d)\s*歳以上[^。]{0,6}の方|\d{2}\s*歳(?:以下|まで|未満)[^。]{0,6}の方|\d{2}代(?:限定|の方のみ)|日本国籍'
-                       r'|(?:東京|大阪|名古屋|福岡|札幌|京都|神戸|横浜|都内|関東|関西|首都圏|[一-龥]{2,3}[都府県市])[^。]{0,8}(?:在住|を拠点|拠点に|にお住まい|近郊|へ通え|に通え)'),
-         ('🔴資格必須', r'(?:資格|免許)[^。]{0,16}(?:必須|保有者|お持ちの方|を持っている方|をお持ち|現在保有|を保有し|保有している方)'
+                       r'|(?:東京|大阪|名古屋|福岡|札幌|京都|神戸|横浜|都内|関東|関西|首都圏|東北|北陸|東海|近畿|中国地方|四国|九州|沖縄|甲信越|海外|[一-龥]{2,3}[都道府県市])[^。]{0,8}'
+                       r'(?:在住(?!の(?:店主|オーナー|代表|私|当方|社長|者です|発注者|クライアント|スタッフ|メンバー|社員|従業員|チーム|講師)|です|して(?:おり|い)ます|[^。]{0,10}(?:不可|ご遠慮|お断り|対象外|NG))|を拠点|拠点に|にお住まい|近郊|へ通え|に通え)'),
+         ('🔴資格必須', r'(?:資格|免許)[^。]{0,16}(?:必須|保有者|お持ちの方|を持っている方|をお持ち|現在保有|を保有し|保有している方)|有資格者'
                        r'|(?:行政書士|税理士|社労士|社会保険労務士|司法書士|弁護士|公認会計士|看護師|薬剤師|宅建士|宅地建物取引士|中小企業診断士|弁理士|一級建築士|二級建築士)(?:の(?:方|先生)|を募集|募集|資格|登録済|として登録)'),
          ('🔴実機', r'実機[^。]{0,15}(?:必須|お持ち|所有|が必要|が要|をご用意|で(?:の)?(?:確認|テスト|検証|動作))|(?:iPhone|Android|Mac|Windows\s?PC)[^。]{0,10}(?:をお持ちの方|の所有|必須)'),
          ('🔴経験年数', r'(?:経験|実務|開発)[^。]{0,12}\d+\s*年以上|\d+\s*年以上の[^。]{0,8}経験'),
@@ -101,48 +102,63 @@ def hissu(body):
             if ran and not re.search(TOU, s):  # 「ご回答ください」「ありますか？」＝聞いているだけの1文は除く
                 for n, rx in RAN_KEIKEN: put(n, re.search(rx, s), s)  # 印には当たった1文の頭を出す
     return marks
+def hissu_dai(title):
+    """題名に応募できない条件（地域・資格など）があれば印を返す。題名は【…】・｜で区切った切れごとに1文として見る（本文の見出しとして読むと【関西在住】の中身が数えられない）"""
+    marks = []
+    for k in re.split(r'[【】\[\]［］＜＞<>｜|/／]', title or ''):
+        for mk in hissu(k):
+            if not any(x.split(':')[0] == mk.split(':')[0] for x in marks): marks.append(mk)
+    return marks
 # ── ここまで
 rows = [r for r in csv.reader(open(f, encoding='utf-8'), delimiter='\t')][1:]
 done = S.kiroku_ids()
 rows = [r for r in rows if len(r) >= 7 and r[1] not in done]
-print(f'{f.name} の候補 {len(rows)} 件を開く（記録にある ID は外した）')
-got = []
+D.mkdir(parents=True, exist_ok=True)
+MON = D / f'mon-{f.stem}.txt'  # 門の全行（mawasu.sh から呼んでも単独で打っても同じ所に残る・1件ごとに書き足す＝途中で止まっても残る）
+out = open(MON, 'w', encoding='utf-8')
+def say(*a):
+    l = ' '.join(str(x) for x in a); print(l, flush=True); out.write(l + '\n'); out.flush()
+say(f'{f.name} の候補 {len(rows)} 件を開く（記録にある ID は外した）・1件ずつ流す（全行は {MON}）')
+HANTEI = str(pathlib.Path(__file__).with_name('mon-hantei.cjs'))
+ok = aka = n_got = 0
+terasezu = []
 for r in rows:
-    try:
-        t = urllib.request.urlopen(urllib.request.Request(f'https://crowdworks.jp/public/jobs/{r[1]}', headers={'User-Agent': 'Mozilla/5.0'}), timeout=30).read().decode('utf-8', 'ignore')
-    except Exception as e:
-        print(r[1], '取れず', e); continue
-    t = re.sub(r'<script.*?</script>|<style.*?</style>', '', t, flags=re.S)
-    got.append((r, re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', t)))))
-    time.sleep(1.0)
-mon = {}
-if got:
-    pr = subprocess.run(['node', str(pathlib.Path(__file__).with_name('mon-hantei.cjs'))], input=json.dumps([{'id': r[1], 'text': x} for r, x in got]),
-                        capture_output=True, text=True, timeout=120)
-    mon = {a[0]: a for a in (l.split('\t') for l in pr.stdout.splitlines()) if len(a) >= 2}
-    if pr.returncode or len(mon) != len(got):
-        print(f'🔴 門が {len(mon)}/{len(got)} 件しか答えていない（rc={pr.returncode}）', pr.stdout[-200:], pr.stderr[-200:]); sys.exit(3)
-ok = aka = 0
-for r, x in got:
     jid = r[1]
+    try:
+        t = urllib.request.urlopen(urllib.request.Request(f'https://crowdworks.jp/public/jobs/{jid}', headers={'User-Agent': 'Mozilla/5.0'}), timeout=30).read().decode('utf-8', 'ignore')
+    except Exception as e:
+        say(jid, '取れず', e); continue
+    time.sleep(1.0)
+    t = re.sub(r'<script.*?</script>|<style.*?</style>', '', t, flags=re.S)
+    x = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', t)))
+    n_got += 1
+    pr = subprocess.run(['node', HANTEI], input=json.dumps([{'id': jid, 'text': x}]), capture_output=True, text=True, timeout=60)
+    a = next((l.split('\t') for l in pr.stdout.splitlines() if l.split('\t')[0] == jid), None)
+    if pr.returncode or not a or len(a) < 2:
+        say(f'🔴 門が {jid} に答えていない（rc={pr.returncode}）', pr.stdout[-200:], pr.stderr[-200:]); out.close(); sys.exit(3)
     i = x.find('仕事の詳細'); j = x.find('クライアント情報', i); body = x[i:j if j > i else i + 6000]
     k = body.rfind('この仕事の特徴'); body = body[:k] if k > len(body) - 200 else body  # 終わりに CW が自動で付ける札（スキマ時間歓迎 など）を外す
     marks = [n for n, rx in R if re.search(rx, body)]
     marks += hissu(body)
+    for mk in hissu_dai(r[6]):  # 条件が題名にしか無い募集（「大阪在住の一級建築士有資格者募集」・本文は1行）も落とす
+        n, w = mk.split(':', 1)
+        if not any(y.startswith(n) for y in marks): marks.append(f'{n}:題名の「{w}」')
     marks += [n for n, rx in HON if re.search(rx, body)]
     marks += [k for k in (kigen_kire(body, dt.date.today()), gokushou(r[2], body)) if k]
     if 'このお仕事の募集は終了しています' in x: marks.append('🔴募集終了')
-    a = mon.get(jid, [jid, '?', '', ''])
     g = a[1]
     if g == '🔴': marks.append('🔴分野'); aka += 1
-    elif g == '?': marks.append('🔴分野が照らせず')
+    elif g == '?': marks.append('🔴分野が照らせず'); terasezu.append(jid)
     if len(a) > 2 and a[2]: marks.append('🔴できない:' + a[2][:40])
     if len(a) > 3 and a[3]: marks.append('🔴講座売りの印:' + a[3][:40])
-    kouho = not any(m.startswith('🔴') for m in marks)
+    kouho = not any(mk.startswith('🔴') for mk in marks)
     m = re.search(r'応募した人\s*(\d+)\s*人', x)
     if kouho and g == '🟡':
         with open(D / 'kouho-kiiro.tsv', 'a', encoding='utf-8') as w:
             w.write('\t'.join([time.strftime('%Y-%m-%dT%H:%M'), jid, r[2], r[6][:60]]) + '\n')
     if kouho and g == '✅': ok += 1
-    print(('★ ' if kouho and g == '✅' else '☆ ' if kouho else '') + jid, r[2], ' '.join(marks) or '✅', '|', '分野' + g, r[6][:50], f'| 応募{m.group(1) if m else "?"}人')
-print(f'応募文へ進む（🔴無し・分野✅） {ok} / {len(rows)} ／ 分野の門で🔴 {aka} ／ 開けなかった {len(rows) - len(got)}')
+    say(('★ ' if kouho and g == '✅' else '☆ ' if kouho else '') + jid, r[2], ' '.join(marks) or '✅', '|', '分野' + g, r[6][:50], f'| 応募{m.group(1) if m else "?"}人')
+say(f'応募文へ進む（🔴無し・分野✅） {ok} / {len(rows)} ／ 分野の門で🔴 {aka} ／ 分野が照らせず {len(terasezu)} ／ 開けなかった {len(rows) - n_got}')
+if terasezu:  # 本文の始まりが頁に無い＝頁の形が変わった見込み。分野で落とした🔴と混ぜず、照らせていないとして止める
+    say(f'🔴 分野の門が {len(terasezu)}/{n_got} 件を照らせず（頁に本文の始まりが無い・頁の形が変わった見込み）：{" ".join(terasezu[:10])}'); out.close(); sys.exit(3)
+out.close()
