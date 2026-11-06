@@ -10,7 +10,13 @@
 require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process'), S = require('./settei.cjs')
 const T = __dirname, BUN = path.join(S.DATA, 'oubo-bun'), JK = path.join(S.DATA, 'junkai')
-const files = process.argv.slice(2).length ? process.argv.slice(2) : (fs.existsSync(BUN) ? fs.readdirSync(BUN).filter(f => /^(cw|lancers)-\d+\.txt$/.test(f)).sort().map(f => path.join(BUN, f)) : [])
+let files = process.argv.slice(2).length ? process.argv.slice(2) : (fs.existsSync(BUN) ? fs.readdirSync(BUN).filter(f => /^(cw|lancers)-\d+\.txt$/.test(f)).sort().map(f => path.join(BUN, f)) : [])
+// 試し10回目：引数なしで打つと、見送りを記録した下書きも 🔴 のまま残り ✅ にならなかった → 記録の状態が「見送」の ID は外す（dashi-more.py と同じ見方・引数で名指しした物は外さない）
+if (!process.argv.slice(2).length && fs.existsSync(S.kiroku)) {
+  const mio = new Set(fs.readFileSync(S.kiroku, 'utf8').split('\n').map(l => l.split('\t')).filter(c => c.length >= 7 && /見送/.test(c[6])).flatMap(c => c[2].split('・').map(x => x.trim())))
+  const mae = files.length; files = files.filter(f => !mio.has((path.basename(f).match(/-(\d+)\.txt$/) || [])[1]))
+  if (mae > files.length) console.log(`見送りを記録した下書き ${mae - files.length} 本は外した（記録の状態が「見送」）`)
+}
 if (!files.length) { console.log('🔴 確かめる下書きが無い（' + BUN + '）'); process.exit(2) }
 // 型の「進め方」の固定の行（穴の無い番号つきの行）＝この募集に合わせて書き直す行
 const KATA = fs.readFileSync(path.join(T, '..', 'templates', 'oubo-kihon.txt'), 'utf8').split('\n').map(s => s.trim()).filter(s => /^\d+．/.test(s) && !/\{/.test(s))

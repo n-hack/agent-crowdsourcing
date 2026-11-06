@@ -22,7 +22,7 @@ if '--obi' in a:
         sys.exit(f'🔴 --obi {"-".join(map(str, obi))} は帯になっていない（上限が0以下か下限が上限より上）。帯の無い（相談の）募集なら --obi を付けずに打つ')
 if '--id' in a:
     i = a.index('--id'); skip = a[i + 1]; a = a[:i] + a[i + 2:]
-if not a or a[0] in ('-h', '--help'):
+if (not a and not obi) or (a and a[0] in ('-h', '--help')):  # 試し10回目：docs どおり --obi を語なしで打つと使い方で止まっていた → --obi があれば語は要らない
     print(__doc__); sys.exit(2)
 if skip:  # 試し9回目：帯の無い募集に作った帯（--obi 0-82500）を付けても止まらなかった → 公開頁の帯と --obi を照らす
     try:
