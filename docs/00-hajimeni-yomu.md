@@ -22,6 +22,10 @@
    claude plugin install nhack-discord@nhack-plugins
    ```
    `<このリポジトリの持ち主>` は、このリポジトリを取ってきた GitHub の組織名（`git remote get-url origin` の github.com の次の名前）
+   - この2行は、オーナーに聞かずに打ってよい。このリポジトリを使うための前提の物で、入る先は Claude Code の利用者の設定だけ（「scope: user」と出る）。お金も、外への送信も無い
+   - オーナーに聞く物：origin が github.com でなく組織名が取れないとき（推さずに組織名を聞く）／この2行以外のプラグインやマーケットプレイスを足す・外す・止める／Claude Code の設定・権限・鍵を変える／2行のどちらかが失敗したとき（出たエラーの1行を添える）
+   - 入れたら、起こし直す前に `node tools/nhack-mon.cjs` をもう一度打つ。この門は入った印のファイル（`plugins/installed_plugins.json`）を読むだけなので、起こし直さなくても ✅ になる（2026-11-06 の実測：空の設定で rc=9 → 1行目の後 rc=9 → 2行目の後 rc=0・起こし直し無し）。tools/ の中でプラグインに触れるのは nhack-mon.cjs だけで、ほかの道具はプラグインの機能を呼ばない。✅ ならそのまま手順2へ進む（門の 🔴 の文に「入れたら起こし直す」と出るが、このリポジトリの道具のためには要らない）
+   - 起こし直しが要るのは、プラグインの機能そのもの（連絡の道具など）をその会話の中で使いたいときだけ。エージェントは自分の会話を起こし直せないので、そのときだけオーナーへ1行：「N-Hack のプラグインを入れました。Claude Code を一度閉じて開き直し、この会話を続けてください（claude --continue）」
 2. 人がやる初期構築（登録・本人確認・口座・メールと予定・連絡ツール）が済んでいるかを docs/15 の確かめの行で見る。🔴 の段は人に1行で頼む
 3. 下の「問診票」をオーナーに渡して答えをもらい、`config/profile.example.json` を `config/profile.json` に写して入れる
 4. docs/01〜09 を順に読む
@@ -52,9 +56,18 @@
 | ─ | メール … docs/15 段1の専用アドレス（場の登録に使った物） |
 
 ### 答えが来るまで（試しの間）の扱い
-- 名乗り・署名は空けて待つ。仮の名前を作って入れない（作った名前の下書きが、後で本物と混ざって出るのを防ぐ）
+- config/profile.json の名乗り・署名は空けて待つ。仮の名前を作って入れない（作った名前の下書きが、後で本物と混ざって出るのを防ぐ）
 - その間も、巡回と門（docs/12 の段1・2）はオーナーの値が無くても回る。`bash tools/mawasu.sh --no-browser` は段3（応募文）で止まるが、止まるまでの巡回と門の結果は置き場に残る（docs/12）
 - 道具の試しをしたいときは、置き場を本番と分け（`CS_DATA=<試しの置き場>`）、`--go` を付けない。試しの置き場は答えが来たら消す
+- 下書きの段まで試したいとき（オーナーやテストの頼みで「試験用 太郎」のような架空と分かる名乗りを渡されたとき）は、その名乗りを config/profile.json に入れず、試しの置き場の中の profile に入れて `CS_PROFILE` で渡す。設定の道具（settei.cjs・settei.py）はどちらも `CS_PROFILE` を先に読む（実装）
+  ```
+  mkdir -p <試しの置き場>; cp config/profile.example.json <試しの置き場>/profile.json
+  # <試しの置き場>/profile.json の 名前・名乗り・署名・自分の名前の印 を試しの名に直す（会社名・メールは空でよい）
+  export CS_PROFILE=<試しの置き場>/profile.json CS_DATA=<試しの置き場>/data
+  node tools/settei.cjs            # 「設定」が試しの profile・「置き場」が試しの data になっていること
+  bash tools/mawasu.sh --no-browser
+  ```
+  2026-11-06 の実測：この形で settei.cjs・settei.py とも試しの profile と置き場を出し、oubo-shitagaki.cjs は試しの名で下書きを作り、config/profile.json は作られなかった。試しが終わったら試しの置き場ごと消す（profile もその中なので一緒に消える）
 - 答えを入れたら `node tools/settei.cjs` で設定の道と置き場を確かめ、`bash tools/mawasu.sh --no-browser` を1回回して段3が通る（「3 応募文 ✅ 下書き N 件」）ことを見る
 
 ## 使える範囲
