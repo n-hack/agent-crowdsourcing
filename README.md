@@ -35,7 +35,8 @@
 | manner-mon.cjs | 宛名・名乗り・結び・署名の欠け／二重敬語／「了解しました」／くだけた語尾／AIっぽさ（絵文字・Markdown・褒めすぎ など） | `node tools/manner-mon.cjs` |
 | bunya-mon.cjs | 取らないジャンル（ライター・SNS・動画 など）の募集（🔴／✅／🟡 の3値・語は config/bunya.json） | `node tools/bunya-mon.cjs` |
 | jisseki-mon.cjs | 裏づけの無い成果の言い方（「売上が上がりました」など） | `node tools/jisseki-mon.cjs` |
-| shitagaki-kakunin.cjs | 埋めた応募の下書きの穴・型の行の残り・宛名の崩れ・金額が予算の帯の外・本文と .json の金額の食い違い（manner-mon と jisseki-mon も呼ぶ） | `node tools/shitagaki-kakunin.cjs <下書き>` |
+| shitagaki-kakunin.cjs | 埋めた応募の下書きの穴・型の行の残り・宛名の崩れ・金額が予算の帯の外（帯の無い募集は金額の根拠の有無）・納期が本文の締切より後か既定（今日から2日後）より長い・本文と .json の金額と日数の食い違い（manner-mon と jisseki-mon も呼ぶ） | `node tools/shitagaki-kakunin.cjs <下書き>` |
+| cw-souba.py | 帯の無い募集（相談）の金額を、同じ種類の募集の帯の中央値から出す（.json の金額の根拠に写す1行も出す・docs/04） | `python3 tools/cw-souba.py --id <ID> <何を> <どの道具で>` |
 
 回す道具（巡回・応募・返事・検算）の一覧は docs/12。
 

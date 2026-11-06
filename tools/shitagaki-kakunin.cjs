@@ -1,6 +1,8 @@
 // 【下書きの確かめ】埋めた応募の下書きを、送る段（オーナーの OK と --go）の前に1本ずつ確かめる（docs/05 の手順6・読むだけ）
 // 入力: 下書きの .txt（引数・複数可・無ければ <置き場>/oubo-bun/ の全部）と同じ名前の .json（金額＝税抜・納期）／<置き場>/junkai/ の巡回の tsv（予算の帯と依頼主の表示名）／templates/oubo-kihon.txt
-// 見る物: ①穴の残り {…} ②型の行の残り（型の「進め方」の固定の行がそのまま）③宛名の崩れ ④ .json の金額・納期 ⑤金額が本文の予算の帯の中か（帯は税込）
+// 見る物: ①穴の残り {…} ②型の行の残り（型の「進め方」の固定の行がそのまま）③宛名の崩れ ④ .json の金額・納期
+//        ④-2 納期：本文の締切・日数（「◯日以内」「◯月◯日まで」）より後でないか／既定（契約の当日〜2日後）を超えるなら .json の「納期の理由」があるか／下書きの「◯日以内」「◯月◯日」と .json が合うか
+//        ⑤金額が本文の予算の帯の中か（帯は税込）・帯の無い募集なら .json の「金額の根拠」（tools/cw-souba.py の1行）があるか
 //        ⑥本文の「◯円（税込）／（税抜）」と .json の金額が合うか ⑦マナー・AI 臭さの門（manner-mon.cjs oubo）⑧成果の言い方の門（jisseki-mon.cjs）
 // 出力: 下書きごとに ✅ か、🔴 の理由の行。最後に「通った N ／ 止めた M」
 // 止まる条件: 🔴 が1本でもあれば rc=2（直してから打ち直す）。帯は tsv に無ければ公開頁を読む。読めなければ「帯を照らせず」の 🔴（照らせていない物を通さない）
@@ -22,17 +24,46 @@ const tsvRow = id => {
   return null
 }
 // 予算の帯（税込）：tsv の「固定0-82500.0」／公開頁の「固定報酬制 30,000円 〜 50,000円」。帯の無い募集（相談・時給）は null
+// 公開頁（1件1回だけ読む）。読めなければ null
+const PEJI = {}
+const peji = async id => {
+  if (id in PEJI) return PEJI[id]
+  try { PEJI[id] = (await (await fetch('https://crowdworks.jp/public/jobs/' + id, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(30000) })).text()).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ') }
+  catch (e) { PEJI[id] = null }
+  return PEJI[id]
+}
 const obi = async (id, r) => {
   if (r && r[2]) { const m = r[2].match(/^固定([\d.]+)-([\d.]+)$/); return m && (+m[1] > 0 || +m[2] > 0) ? { min: +m[1], max: +m[2] || Infinity, doko: '巡回の tsv' } : null }
-  try {
-    const t = (await (await fetch('https://crowdworks.jp/public/jobs/' + id, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(30000) })).text()).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
+  {
+    const t = await peji(id); if (t === null) return undefined
     // 頁の書き方は4通り（2026-11-06 の実物）：「30,000円 〜 50,000円」「〜 5,000円」「5,000円 〜」「82,500円」（1つだけ＝上限。巡回の tsv では 0-82500）
     const g = t.match(/固定報酬制\s*(?:([\d,]+)\s*円\s*)?(〜\s*(?:([\d,]+)\s*円)?)?/)
     if (g && (g[1] || g[3])) return { min: g[2] ? yen(g[1] || 0) : 0, max: g[3] ? yen(g[3]) : g[2] ? Infinity : yen(g[1]), doko: '公開頁' }
     if (/固定報酬制\s*(?:ワーカーと相談|相談)|時間単価制/.test(t)) return null
     return undefined  // 書き方が読めない＝照らせず（黙って通さない）
-  } catch (e) { return undefined }
+  }
 }
+// 本文の納期（募集の本文の「仕事の詳細」から「クライアント情報」まで）：日付（「納期 11月20日」「11月20日まで」）と日数（「納品まで5日以内」「1週間以内に納品」）。
+// 一番早い日を返す（{hi: Date, go: 当たった語} ／ 書いていなければ null）。応募・募集の締切は納期に数えない
+const DAY = 864e5
+const honbunNouki = (t, kyou) => {
+  const i = t.indexOf('仕事の詳細'), j = t.indexOf('クライアント情報', i), b = i < 0 ? t : t.slice(i, j > i ? j : i + 6000)
+  const c = []
+  const hiduke = (y, mo, d) => {
+    if (!(mo >= 1 && mo <= 12)) return null
+    let yy = y ? +y : kyou.getFullYear(), dd = d === '末' ? new Date(yy, mo, 0).getDate() : +d
+    let h = new Date(yy, mo - 1, dd)
+    if (!y && h < kyou && (kyou - h) / DAY > 183) h = new Date(yy + 1, mo - 1, dd)  // 年が無く半年より前＝来年
+    return h
+  }
+  for (const m of b.matchAll(/(?<!応募|募集|応募の|募集の)(?:納期|納品日|納品希望日|納品期限|締切|締め切り|〆切|完成|公開日|リリース|提出日|提出期限)[】\]）)\s:：は日]{0,4}(?:初稿提出日|初稿|提出日)?[\s:：]{0,3}(?:(20\d{2})\s*[年\/.\-]\s*)?(\d{1,2})\s*[月\/]\s*(\d{1,2}|末)/g)) { const h = hiduke(m[1], +m[2], m[3]); if (h) c.push({ hi: h, go: m[0] }) }
+  for (const m of b.matchAll(/(?:(20\d{2})\s*年\s*)?(\d{1,2})\s*月\s*(\d{1,2}|末)\s*日?\s*(?:[（(][^）)]{1,3}[）)])?\s*(?:まで|迄|までに)(?:[^。]{0,12})(?:納品|完成|仕上げ|公開|納め|ご提出|提出)/g)) { const h = hiduke(m[1], +m[2], m[3]); if (h) c.push({ hi: h, go: m[0] }) }
+  const nichi = (n, tani) => tani === '週間' ? n * 7 : tani === 'ヶ月' || tani === 'か月' || tani === 'カ月' ? n * 30 : tani === '営業日' ? Math.ceil(n * 7 / 5) : n
+  for (const m of b.matchAll(/(?<!応募|募集)(?:納期|納品|完成|仕上げ|作業期間|期限)[^。]{0,16}?(\d{1,3})\s*(日|営業日|週間|ヶ月|か月|カ月)\s*(?:以内|程度|程|ほど|前後|で|まで)/g)) c.push({ hi: new Date(+kyou + nichi(+m[1], m[2]) * DAY), go: m[0] })
+  for (const m of b.matchAll(/(\d{1,3})\s*(日|営業日|週間|ヶ月|か月|カ月)\s*以内[^。]{0,6}(?:納品|完成|仕上げ|ご対応いただける|対応できる)/g)) c.push({ hi: new Date(+kyou + nichi(+m[1], m[2]) * DAY), go: m[0] })
+  return c.length ? c.sort((x, y) => x.hi - y.hi)[0] : null
+}
+const ymd = d => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
 const yen = s => +String(s).replace(/,/g, '')
 ;(async () => {
   let ok = 0, ng = 0
@@ -57,10 +88,24 @@ const yen = s => +String(s).replace(/,/g, '')
     const d = nou.match(/^(20\d{2})-(\d{1,2})-(\d{1,2})$/), kyou = new Date(new Date().toDateString())
     if (!d) red.push('.json の納期が YYYY-M-D でない：' + (nou || '空'))
     else if (new Date(+d[1], +d[2] - 1, +d[3]) < kyou) red.push('.json の納期が今日より前：' + nou)
+    // ④-2 納期の日数（docs/05 共通の決まり：既定は契約の当日〜2日後・本文の締切いっぱいにしない・下書きの日数と .json を合わせる）
+    if (d) {
+      const nd = new Date(+d[1], +d[2] - 1, +d[3]), riyuu = String(J['納期の理由'] || '').trim()
+      if (ba === 'cw') {
+        const t = await peji(id)
+        if (t === null) red.push('納期を照らせず（公開頁が読めない）')
+        else { const h = honbunNouki(t, kyou); if (h && nd > h.hi) red.push(`.json の納期 ${nou} が本文の「${h.go.trim().slice(0, 30)}」（〜${ymd(h.hi)}）より後`) }
+      }
+      const kitei = new Date(+kyou + 2 * DAY)
+      if (nd > kitei && !riyuu) red.push(`.json の納期 ${nou} が既定（契約の当日〜2日後＝〜${ymd(kitei)}）より長い：日付を前に寄せるか、.json に「納期の理由」を1行（例「全20頁のため最初の5頁を翌日・全体は5日後」）`)
+      for (const m of txt.matchAll(/(\d{1,3})\s*日以内/g)) { const sa = Math.round((nd - kyou) / DAY); if (Math.abs(sa - +m[1]) > 1) red.push(`下書きの「${m[0]}」と .json の納期 ${nou}（今日から ${sa} 日）が合わない`) }
+      for (const m of txt.matchAll(/(\d{1,2})\s*月\s*(\d{1,2})\s*日[^。\n]{0,8}(?:まで|納品)/g)) { if (+m[1] !== +d[2] || +m[2] !== +d[3]) red.push(`下書きの「${m[0].slice(0, 16)}」と .json の納期 ${nou} が合わない`) }
+    }
     // ⑤ 予算の帯（帯は税込・.json の金額は税抜）
     if (kin > 0 && ba === 'cw') {
       const b = await obi(id, r)
       if (b === undefined) red.push('帯を照らせず（巡回の tsv に無く、公開頁も読めない）')
+      else if (b === null && !String(J['金額の根拠'] || '').trim()) red.push('帯の無い募集（相談）なのに .json に「金額の根拠」が無い：python3 tools/cw-souba.py --id ' + id + ' <何を> <どの道具で> の最後の1行を写す（docs/04 の「5 値段」）')
       else if (b) { const zei = Math.round(kin * 1.1); if (zei < b.min || zei > b.max) red.push(`金額が予算の帯の外：税込 ${zei.toLocaleString()}円 ／ 帯 ${b.min.toLocaleString()}〜${b.max.toLocaleString()}円（${b.doko}）`) }
     }
     // ⑥ 本文の金額と .json
