@@ -10,7 +10,7 @@ if (!id || !f) { console.log('使い方: node tools/cwreply.cjs <部屋> <本文
 const A = path.join(S.DATA, 'aite', id.replace(/\//g, '_') + '.md')
 if (fs.existsSync(A)) console.log('📒 台帳 ' + A + '\n' + fs.readFileSync(A, 'utf8'))
 else { console.log('🔴 台帳がありません：' + A + '（決まったこと・約束・期限を書いてから送る）'); if (go === 'go' && process.env.AITE_OK !== '1') process.exit(2) }
-const body = fs.readFileSync(f, 'utf8').trim(); require('./jisseki-mon.cjs')([f], go); require('./manner-mon.cjs')(body, 'henji', go)
+const body = fs.readFileSync(f, 'utf8').trim(); require('./jisseki-mon.cjs')([f], go); require('./manner-mon.cjs')(body, 'henji', go); require('./keiyaku-mon.cjs')(body, id, go)  // 契約を受ける文は、できると確かめた記録（<置き場>/keiyaku/<部屋>.md）があるときだけ送る（docs/06）
 ;(async () => {
   const b = await S.playwright().chromium.connectOverCDP(S.cdp, { timeout: 90000 }); const p = await S.tab(b, process.env.TAB_NAME || 'cwreply'); p.on('dialog', d => d.accept().catch(() => {}))
   let rc = 0
