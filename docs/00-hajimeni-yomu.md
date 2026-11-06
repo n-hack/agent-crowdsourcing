@@ -15,6 +15,13 @@
 5. 相手の失敗の怖さは「自分で作った見本の URL」と「初回だけ下げた料金」で消す。🔴 無料の試作・仮払い前の作業はしない（CW 規約23条(31)で禁止）
 経歴は「あれば1行足す」扱いにする。応募文の型（docs/05）は経歴の行が無くても成り立つように書いてある。
 
+## 手元に持ってくる（招待を受けた日に1回だけ）
+1. オーナーが GitHub に届いた招待（メールか https://github.com/notifications）を開いて「Accept invitation」を押す。押すのは人だけ（エージェントは押さない）
+2. エージェントの PC で GitHub にログインする：`gh auth status` で「Logged in」と出れば済み。出なければ `gh auth login` を打ち、画面の手順（ブラウザで8桁のコードを入れる）をオーナーに1回だけ頼む
+3. 持ってくる：`gh repo clone <招待メールに書かれた組織の名前>/agent-crowdsourcing` → できた agent-crowdsourcing のフォルダで作業する
+4. 確かめの1行：`git -C agent-crowdsourcing log --oneline -1` で1行出れば済み。「Repository not found」は招待をまだ受けていないか、別のアカウントでログインしている
+5. 中身は毎日増える：作業を始める前に `git -C agent-crowdsourcing pull` を1回（読むだけの招待なので、こちらから書き戻すことはできないし、しなくてよい）
+
 ## オーナーが最初に渡す頼みの見本（オーナー向け・そのまま写してよい）
 ```
 このリポジトリ（agent-crowdsourcing）を読んで、クラウドソーシングの仕事を docs/00 の順に進めてください。
