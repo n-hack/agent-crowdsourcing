@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """【巡回】クラウドワークスの公開の新着を語ごとに引き、前回の巡回より後に出た募集を残す（ログインなし・読むだけ）
 入力: config/profile.json の「巡回の語」（"" は語なしの新着一覧）／前回の時刻 <置き場>/junkai/.last（無ければ48時間前から）／応募の記録（記録にある ID は出さない）
-出力: <置き場>/junkai/YYYYMMDD-HHMM.tsv（1行目にその道）と、最後の行に件数の内訳。勧誘の型の語・CWテック（題名が⭐）・自社の依頼主・同じ題名が別の相手で並ぶ物は外す
+出力: <置き場>/junkai/YYYYMMDD-HHMM.tsv（1行目は見出し・報酬の列は「固定5000-10000」「時給1500-2000」「固定相談」「その他」）。画面には1行目にその tsv の道、最後の行に件数の内訳。勧誘の型の語・CWテック（題名が⭐）・自社の依頼主・同じ題名が別の相手で並ぶ物は外す
 止まる条件: 語を1つも引けなかったとき rc=3（通信か頁の形が変わった）。1件も残らないのは rc=0（正常）
 呼び方: python3 tools/cw-junkai.py ／ 語を変えるときは profile の「巡回の語」を直す（環境変数 CS_JUNKAI_GO="語,語" でその回だけ差し替え）
 """
@@ -30,11 +30,13 @@ def fetch(kw):
 
 
 def pay_of(p):
+    """報酬の種類と帯（円・整数）。固定でも時給でもない物は「その他」（試し：「None0-0」が tsv に出ていた）"""
+    en = lambda v: int(float(v or 0))  # 検索の頁は 5000.0 の形で返す → 「固定5000.0-10000.0」と出ていた
     if p.get('fixed_price_payment'):
-        f = p['fixed_price_payment']; return '固定', f.get('min_budget') or 0, f.get('max_budget') or 0
+        f = p['fixed_price_payment']; return '固定', en(f.get('min_budget')), en(f.get('max_budget'))
     if p.get('hourly_payment'):
-        h = p['hourly_payment']; return '時給', h.get('min_hourly_wage') or 0, h.get('max_hourly_wage') or 0
-    return None, 0, 0
+        h = p['hourly_payment']; return '時給', en(h.get('min_hourly_wage')), en(h.get('max_hourly_wage'))
+    return 'その他', 0, 0
 
 
 def main():
@@ -82,7 +84,7 @@ def main():
             pe = (o.get('entry') or {}).get('project_entry') or {}
             oubo, hope = pe.get('num_application_conditions'), pe.get('project_contract_hope_number') or 1
             titles.setdefault(title, set()).add(cl.get('username'))
-            rows.append([at[:16], str(jo.get('id')), (f'{kind}相談' if soudan else f'{kind}{lo}-{hi}'), cl.get('username') or '',
+            rows.append([at[:16], str(jo.get('id')), (f'{kind}相談' if soudan else kind if kind == 'その他' else f'{kind}{lo}-{hi}'), cl.get('username') or '',
                          '確' if cl.get('is_employer_certification') else '-', kw, title.replace('\t', ' '), '-' if oubo is None else f'{oubo}/{hope}'])
     pool.shutdown()
     dup = {t for t, us in titles.items() if len(us) >= 2}
