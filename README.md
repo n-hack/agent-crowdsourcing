@@ -19,6 +19,7 @@
 12. [docs/14-shoki-100man.md](docs/14-shoki-100man.md) … 初月から月100万の逆算（漏斗の式・実測の率・1日の目標）
 13. [docs/15-shoki-kouchiku.md](docs/15-shoki-kouchiku.md) … 初期構築（人がやる所）：登録・本人確認・口座・メールと予定・連絡ツール。段ごとに済んだかの確かめの1行つき
 14. [docs/16-profile-portfolio.md](docs/16-profile-portfolio.md) … プロフィール文の型（場ごと）・問診票・写真の決め方・ポートフォリオの見本（templates/profile/・templates/portfolio/）
+15. [docs/17-agent-gata-no-ba.md](docs/17-agent-gata-no-ba.md) … エージェント型の場（案件を紹介してもらう形）の登録から最初の面談まで・登録直後のメールにその日のうちに返す
 
 ## 1日の回し方（要約）
 - 1コマンド … `bash tools/mawasu.sh`（巡回→門→下書き→返事の見張り→出し漏れの検算・送るのは `--go` のときだけ・docs/12）
