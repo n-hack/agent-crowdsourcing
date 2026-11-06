@@ -13,7 +13,9 @@ const fs = require('fs'), path = require('path')
 const B = path.join(__dirname, '..'), cfg = path.join(B, 'config', fs.existsSync(path.join(B, 'config', 'bunya.json')) ? 'bunya.json' : 'bunya.example.json')
 const C = JSON.parse(fs.readFileSync(cfg, 'utf8')), R = k => new RegExp('(' + C[k] + ')', 'i')
 const TSUYOI = R('強い印'), WADAI = new RegExp('^(' + C['題材になりうる印'] + ')$', 'i'), KOGUCHI = R('小口の印'), AIGO = R('AIの語'), TORANAI = new RegExp('(' + C['取らないジャンル'] + ')')
-const MICHI = /[^\s。]+ ?の仕事(?:・求人|の依頼)/g, michiKesu = s => s.replace(MICHI, ' ')
+// ランサーズの道しるべも消す（頁の形：「仕事を探す ◯◯の仕事 ◯◯の仕事 … 題名の仕事・依頼 題名 [ ◯◯ の仕事 / 業種 ]」）。頭の並びと [ ] は「の仕事・依頼」がある頁だけで消す（CW の題名の頭の語を消さないため）
+const MICHI = /[^\s。]+ ?の仕事(?:・求人|の依頼|・依頼)/g, MICHI_L = /^(?:\s*[^\s。]+の仕事(?=\s))+/, MICHI_K = /\[ ?[^\[\]]{0,80}? の仕事 ?\/[^\[\]]{0,80}\]/g, isL = s => /の仕事・依頼/.test(s)
+const michiKesu = s => (isL(s) ? s.replace(MICHI_L, ' ').replace(MICHI_K, ' ') : s).replace(MICHI, ' ')
 const kesu = s => C['先に消す書き方'].reduce((a, r) => a.replace(new RegExp(r, 'gi'), ' '), s)
 const kiroku = (f, cols) => { const d = path.join(B, 'logs'); fs.mkdirSync(d, { recursive: true }); fs.appendFileSync(path.join(d, f), [new Date().toISOString(), ...cols].join('\t') + '\n') }
 const mon = module.exports = (jobText, go, id) => {
@@ -56,6 +58,9 @@ if (require.main === module) {
     // 道しるべ：分類の「データ作成・データ収集」は題名ではない（13588002 の頁の形）
     ['🟡', '仕事を探す 事務・カンタン作業の仕事・求人 データ作成・入力の仕事・求人 データ検索・データ収集の仕事・求人 大阪在住の一級建築士有資格者募集 大阪在住の一級建築士有資格者募集 データ検索・データ収集 の仕事の依頼 仕事の概要 時間単価制 仕事の詳細 資格はあるけど全く利用していない。そんな方がいればご連絡お待ちしております クライアント情報'],
     ['✅', '仕事を探す 事務・カンタン作業の仕事・求人 リスト作成の仕事・求人 店舗の一覧をエクセルにまとめる リスト作成 の仕事の依頼 仕事の詳細 Web で調べて表にまとめる作業です。 クライアント情報'],
+    // ランサーズの道しるべ：頭の「ライティング・記事作成の仕事」は題名ではない（開発の募集が ✅ のまま）
+    ['✅', '仕事を探す ライティング・記事作成の仕事 Web制作・Webデザインの仕事 GAS でスプレッドシートの集計を自動化の仕事・依頼 GAS でスプレッドシートの集計を自動化 [ システム開発 の仕事 / IT・通信 ] 仕事の詳細 毎朝 CSV を取り込み、月次の表を作るスクリプトを開発してください。 クライアント情報'],
+    ['🔴', '仕事を探す システム開発の仕事 SEO記事のライター募集の仕事・依頼 SEO記事のライター募集 [ ライティング の仕事 / メディア ] 仕事の詳細 生成AI使用可です。1記事3,000字・月10本の執筆をお願いします。 クライアント情報'],
     // 本文の始まりが無い頁＝照らせない（🔴 と分ける）
     ['?', '仕事を探す GAS でスプレッドシートの集計を自動化 依頼の内容 毎朝 CSV を取り込むスクリプトを開発 クライアント情報'],
   ]
