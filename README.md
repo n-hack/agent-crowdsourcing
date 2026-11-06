@@ -14,8 +14,11 @@
 7. [docs/07-profile.md](docs/07-profile.md) … プロフィール・ポートフォリオ・パッケージ（売れている人の型を写す）
 8. [docs/08-data.md](docs/08-data.md) … これまでの数字・立てた仮説と当たり／外れ
 9. [docs/09-ana.md](docs/09-ana.md) … 踏んだ穴（同じ失敗をしないために）
+10. [docs/12-mawashikata.md](docs/12-mawashikata.md) … 1日の回し方の骨格と道具の表（入口は tools/mawasu.sh）
+11. [docs/13-mendan-mae-1mai.md](docs/13-mendan-mae-1mai.md) … 面談の前に人へ渡す1枚の型と見本
 
 ## 1日の回し方（要約）
+- 1コマンド … `bash tools/mawasu.sh`（巡回→門→下書き→返事の見張り→出し漏れの検算・送るのは `--go` のときだけ・docs/12）
 - 5分おき … 受信箱と通知を見る → 来ていたらその場で返す（中身に時間が要る時も「拝見しました・◯時までにお返しします」を先に）
 - 1〜2時間おき … 新着を巡回 → 門（tools/）を通す → 通ったものに応募
 - 毎日 … 応募数／返事／面談／契約 を 1行で記録し、仮説を当て直す（docs/08）
@@ -30,7 +33,9 @@
 | bunya-mon.cjs | 取らないジャンル（ライター・SNS・動画 など）の募集（🔴／✅／🟡 の3値・語は config/bunya.json） | `node tools/bunya-mon.cjs` |
 | jisseki-mon.cjs | 裏づけの無い成果の言い方（「売上が上がりました」など） | `node tools/jisseki-mon.cjs` |
 
-名乗りと署名は `config/profile.json` に書きます（`config/profile.example.json` を写して直す）。
+回す道具（巡回・応募・返事・検算）の一覧は docs/12。
+
+名乗りと署名・置き場・ブラウザのつなぐ先は `config/profile.json` に書きます（`config/profile.example.json` を写して直す）。
 
 ## 更新のしかた
 - 新しく分かったことは、その章に「日付・何を見たか・母数」を添えて足す
