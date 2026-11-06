@@ -9,7 +9,6 @@
 import csv, datetime as dt, html, json, os, pathlib, re, subprocess, sys, time, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import settei as S
-S.mon()
 D = S.DATA / 'junkai'
 JUNKAI = re.compile(r'^20\d{6}-\d{4}\.tsv$')  # 巡回の結果だけ（同じ置き場の別の表を読まない）
 if len(sys.argv) >= 2:

@@ -3,7 +3,6 @@
 // 出力: 1行1件「応募番号<TAB>題名」（一覧に案件 ID は出ないので、oubo-zumi-kakunin.cjs が題名で照らす）と「頁 N ／ 応募 M」
 // 止まる条件: 出し先が無い rc=2／ブラウザ・頁が読めない rc=1
 // 呼び方: node tools/cw-oubo-ids.cjs <置き場>/cw-oubo-ids.tsv
-require('./nhack-mon.cjs')()
 const fs = require('fs'), S = require('./settei.cjs')
 if (!process.argv[2]) { console.log('使い方: node tools/cw-oubo-ids.cjs <出し先>'); process.exit(2) }
 ;(async () => {

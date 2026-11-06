@@ -8,7 +8,6 @@
 import concurrent.futures, datetime as dt, html, json, os, re, sys, time, urllib.parse, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import settei as S
-S.mon()
 
 KWS = [x for x in os.environ['CS_JUNKAI_GO'].split(',')] if os.environ.get('CS_JUNKAI_GO') is not None else (S.P.get('巡回の語') or [''])
 # 題名・要約にあれば外す語（副業の人集め・講座売りに多い言い方）。本文での判定は cw-tantei.py と門がする

@@ -3,7 +3,6 @@
 // 出力: <置き場>/oubo-bun/<場>-<ID>.txt（本文）と <場>-<ID>.json（{"金額":null,"納期":null,"日数":null,"題名":"",…}）。既にあれば上書きしない。最後にマナーの門の結果
 // 止まる条件: 名乗り・署名が見本のまま（◯◯）か空 → rc=2（設定を先に直す）
 // 呼び方: node tools/oubo-shitagaki.cjs cw <案件ID> <依頼主> [題名]
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 const [ba, id, aite, dai] = process.argv.slice(2)
 if (!/^(cw|lancers)$/.test(ba || '') || !/^\d+$/.test(id || '')) { console.log('使い方: node tools/oubo-shitagaki.cjs cw|lancers <案件ID> <依頼主|-> [題名]'); process.exit(2) }

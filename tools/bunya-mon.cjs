@@ -7,7 +7,6 @@
 //   🔴 を外して出すときは BUNYA_OK=1 と BUNYA_RIYUU=「理由（10字以上）」→ logs/bunya-soto.log（数えて見直す）
 // 「AI使用可・ChatGPT使用OK」は道具として使ってよいという意味なので、開発の印に数えない（先に消してから照らす）
 // 語は config/bunya.json（無ければ config/bunya.example.json）から読む
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path')
 const B = path.join(__dirname, '..'), cfg = path.join(B, 'config', fs.existsSync(path.join(B, 'config', 'bunya.json')) ? 'bunya.json' : 'bunya.example.json')
 const C = JSON.parse(fs.readFileSync(cfg, 'utf8')), R = k => new RegExp('(' + C[k] + ')', 'i')

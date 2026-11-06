@@ -3,7 +3,6 @@
 // 出力: 「行 N ／ 状態ごとの数」。出し先を渡せば タイトル・方式・クライアント・状態・期限・最終更新・仕事番号・応募番号 の表（cwapply.cjs が二重応募の照合に使う）
 // 止まる条件: 同じ置き場の前の控えの8割を切った（途中で切れた見込み）→ 控えにせず rc=3／ブラウザにつなげない rc=1
 // 呼び方: node tools/cw-oubo-joutai.cjs [<置き場>/cw-joutai-YYYYMMDD-HHMM.tsv]
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 ;(async () => {
   const b = await S.playwright().chromium.connectOverCDP(S.cdp, { timeout: 90000 }); const p = await S.tab(b, process.env.JOUTAI_TAB || 'cw-joutai')

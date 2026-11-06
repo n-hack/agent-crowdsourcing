@@ -3,7 +3,6 @@
 // 出力: 「見る N件」と、★ の行（ID | 題名 | 報酬 | 評価 | 発注率 | 提案数）。★ の線＝評価5以上・低評価が1割以下・発注率50%以上・提案の制限や AI 不可の指定が無い
 // 止まる条件: 語が無い rc=2／ブラウザにつなげない rc=1
 // 呼び方: node tools/l-junkai.cjs <語> [語…]（★ の候補は teian.cjs の前に門と本文を読んで決める）
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 const kws = process.argv.slice(2); if (!kws.length) { console.log('使い方: node tools/l-junkai.cjs <語> [語…]'); process.exit(2) }
 const SF = path.join(S.DATA, 'junkai', 'l-seen.txt'), KF = S.kiroku

@@ -3,7 +3,6 @@
 // 出力: 1行1件「ID<TAB>場<TAB>済|未|終了|不明<TAB>題名<TAB>頁の手がかり」。済・終了の行は dashi-more.py が漏れから外す（出し先を <置き場>/dashi-zumi.tsv にする）
 // 止まる条件: 引数が足りない rc=2／ブラウザにつなげない rc=1
 // 呼び方: node tools/oubo-zumi-kakunin.cjs <ID の一覧> <置き場>/dashi-zumi.tsv <置き場>/cw-oubo-ids.tsv
-require('./nhack-mon.cjs')()
 const fs = require('fs'), S = require('./settei.cjs')
 const [idf, outf, titf] = process.argv.slice(2)
 if (!idf || !outf) { console.log('使い方: node tools/oubo-zumi-kakunin.cjs <ID の一覧> <出し先> [<CW の応募一覧の題名>]'); process.exit(2) }

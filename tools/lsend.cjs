@@ -3,7 +3,6 @@
 // 出力: 入力欄の数・送信の釦の状態・載ったか。<置き場>/henji/lsend.log に1行（頁の「メッセージの送信に失敗しました」は送る前から出ている固定の文＝判定に使わない）
 // 止まる条件: マナーの門 rc=2／送信の釦が開かない rc=3／載っていない rc=2
 // 呼び方: node tools/lsend.cjs <boardId> <本文> [go]
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 const [bid, f, go] = process.argv.slice(2)
 if (!/^\d+$/.test(bid || '') || !f) { console.log('使い方: node tools/lsend.cjs <boardId> <本文> [go]'); process.exit(2) }

@@ -14,9 +14,6 @@ kiroku() { echo "$(date '+%m-%d %H:%M') $1" >> "$LOG"; echo "$1"; }
 tomaru() { kiroku "🔴 段「$1」で止まった：$2"; exit 2; }
 jikan() { local s=$1; shift; perl -e 'alarm shift; exec @ARGV' "$s" "$@"; }   # macOS には timeout が無い
 
-# 0 門（このリポジトリの道具が動く環境か）
-node "$T/nhack-mon.cjs" >/dev/null || tomaru 準備 "nhack-mon.cjs が通らない"
-
 # 1 巡回
 out=$(python3 "$T/cw-junkai.py" 2>&1); rc=$?
 [ $rc -ne 0 ] && tomaru 巡回 "cw-junkai.py rc=$rc ／ $(echo "$out" | tail -1)"

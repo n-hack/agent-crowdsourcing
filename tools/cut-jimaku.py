@@ -5,7 +5,6 @@
 ffmpeg に字幕の焼き込みが無いので、字幕は1行ずつ画像にして重ねる
 """
 import json, os, re, subprocess, sys, tempfile
-if subprocess.run(['node', os.path.join(os.path.dirname(__file__), 'nhack-mon.cjs')]).returncode != 0: sys.exit(9)
 from PIL import Image, ImageDraw, ImageFont
 src, out = sys.argv[1], sys.argv[2]
 gap = float(sys.argv[3]) if len(sys.argv) > 3 else 0.6

@@ -8,7 +8,6 @@
 import base64, json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import settei as S
-S.mon()
 M = S.P.get('メールの見張り') or {}
 KEY, BOX = os.path.expanduser(M.get('サービスアカウントの鍵') or ''), M.get('受信箱') or ''
 if not KEY or not os.path.exists(KEY) or not re.match(r'[^@\s]+@[^@\s]+$', BOX):

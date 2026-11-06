@@ -9,7 +9,6 @@
 　　　　　 絵は配布元の規約の範囲で使う（例：いらすとやは1作品20点まで）。読みは出力のカナで1行ずつ確かめる
 """
 import json, os, subprocess, sys, tempfile, urllib.parse, urllib.request
-if subprocess.run(['node', os.path.join(os.path.dirname(__file__), 'nhack-mon.cjs')]).returncode != 0: sys.exit(9)
 from PIL import Image, ImageDraw, ImageFont
 tsv, out = sys.argv[1], sys.argv[2]
 spk = int(sys.argv[3]) if len(sys.argv) > 3 else 3

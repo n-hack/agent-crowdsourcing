@@ -3,7 +3,6 @@
 // 出力: 1件1行「ID<TAB>分野(✅|🟡|🔴)<TAB>できない条件（空なら通る）<TAB>勧誘の印（空なら通る）」
 // 止まる条件: 入力が JSON でないとき rc=1。go は渡さない＝門は止めず、記録も書かない
 // 呼び方: echo '[{"id":"1","text":"…"}]' | node tools/mon-hantei.cjs
-require('./nhack-mon.cjs')()
 const bunya = require('./bunya-mon.cjs'), dekiru = require('./dekiru-mon.cjs'), kanyu = require('./kanyu-mon.cjs')
 const items = JSON.parse(require('fs').readFileSync(0, 'utf8'))
 const orig = console.log, out = []

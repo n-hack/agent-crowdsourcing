@@ -3,7 +3,6 @@
 // 出力: 入れた値と受取の表示。go で送れたら <置き場>/oubo/<ID>.txt に本文の控え・oubo-kiroku.tsv に「応募」の1行・teian-jiten.tsv に出した時点の応募人数
 // 止まる条件(rc=2): 記録に同じ ID の応募・応募済み一覧の控えに同じ依頼主の同じ題名・控えが10行未満で照らせない・自社の依頼主・分野/できるか/勧誘/成果の言い方/マナーの門・本文に穴（{…}）
 // 呼び方: node tools/cwapply.cjs <ID> <本文> <金額> <YYYY-M-D> [添付|-] [go]（外す変数 DUP_OK・KANYU_OK・DEKIRU_OK は理由を記録に書いてから）
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 const [id, txtf, amount, dl, attach0, go] = process.argv.slice(2)
 if (!/^\d+$/.test(id || '') || !txtf || !amount) { console.log('使い方: node tools/cwapply.cjs <ID> <本文> <金額> <YYYY-M-D> [添付|-] [go]'); process.exit(2) }

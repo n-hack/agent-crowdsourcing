@@ -4,7 +4,6 @@
 // AIっぽさ（絵文字・Markdown・穴埋め・英語の決まり文句・AI の自称・褒めすぎ・！の重ね・飾りの記号 ほか）も見る。出どころは docs/06-henji.md
 // 第4引数 {aite: 相手の文} で相手の長さとの比べも見る。logs/okutta/*.txt（送った文の控え）があれば使い回しの行も見る
 // 名乗りと署名は config/profile.json（無ければ config/profile.example.json）から読む
-require('./nhack-mon.cjs')()  // N-Hack のエージェント専用（docs/00-hajimeni-yomu.md）
 const fs = require('fs'), path = require('path')
 const cfgDir = path.join(__dirname, '..', 'config')
 const cfgFile = fs.existsSync(path.join(cfgDir, 'profile.json')) ? 'profile.json' : 'profile.example.json'

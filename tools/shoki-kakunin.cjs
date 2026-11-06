@@ -4,7 +4,6 @@
 // 出力: 場ごとに1行「✅ ログイン済み」か「🔴 ログインの頁に戻された」と、頁の文から拾った本人確認・口座の語（CW・ランサーズは自分の公開プロフィールも開いて拾う。見つからなければ「─ 頁の文に無い」＝未提出とは限らない）
 // 止まる条件: ブラウザにつなげない rc=3（「未ログイン」と同じにしない）／1つでも 🔴 なら rc=1／全部 ✅ なら rc=0
 // 呼び方: node tools/shoki-kakunin.cjs cw   （全部は all）
-require('./nhack-mon.cjs')()
 const S = require('./settei.cjs')
 const BA = {
   cw:       { mei: 'クラウドワークス', url: 'https://crowdworks.jp/dashboard', login: /crowdworks\.jp\/login/, prof: 'https://crowdworks.jp/profile' },

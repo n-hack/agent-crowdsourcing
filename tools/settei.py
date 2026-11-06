@@ -1,7 +1,7 @@
 """設定の口（Python 側）：個人・会社の値は全部ここから読む（道具の中に名前・メール・パスを書かない）
 入力: config/profile.json（無ければ profile.example.json）＋環境変数 CS_PROFILE・CS_DATA
-出力: P（設定）・DATA（置き場）・KIROKU（応募の記録）・kiroku_ids()・kiroku_tsuika(列)・mon()（門を通す）
-止まる条件: tools/nhack-mon.cjs が通らないとき rc=9／tsuika の列が7つでないとき rc=2
+出力: P（設定）・DATA（置き場）・KIROKU（応募の記録）・kiroku_ids()・kiroku_tsuika(列)
+止まる条件: tsuika の列が7つでないとき rc=2
 呼び方: import settei as S ／ python3 tools/settei.py tsuika 日付 場 案件ID 中身 提示額 月額 状態
 """
 import json, os, pathlib, subprocess, sys
@@ -13,11 +13,6 @@ DATA = pathlib.Path(os.path.expanduser(os.environ.get('CS_DATA') or P.get('置�
 KIROKU = DATA / 'oubo-kiroku.tsv'
 MIDASHI = ['日付', '場', '案件ID', '中身', '提示額', '月額', '状態']
 
-
-def mon():
-    r = subprocess.run(['node', str(R / 'tools' / 'nhack-mon.cjs')], capture_output=True, text=True)
-    if r.returncode != 0:
-        print(r.stdout.strip()); sys.exit(9)
 
 
 def kiroku_rows():

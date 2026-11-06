@@ -7,7 +7,6 @@
 // 出力: 下書きごとに ✅ か、🔴 の理由の行。最後に「通った N ／ 止めた M」
 // 止まる条件: 🔴 が1本でもあれば rc=2（直してから打ち直す）。帯は tsv に無ければ公開頁を読む。読めなければ「帯を照らせず」の 🔴（照らせていない物を通さない）
 // 呼び方: node tools/shitagaki-kakunin.cjs [<置き場>/oubo-bun/cw-<ID>.txt …]
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process'), S = require('./settei.cjs')
 const T = __dirname, BUN = path.join(S.DATA, 'oubo-bun'), JK = path.join(S.DATA, 'junkai')
 let files = process.argv.slice(2).length ? process.argv.slice(2) : (fs.existsSync(BUN) ? fs.readdirSync(BUN).filter(f => /^(cw|lancers)-\d+\.txt$/.test(f)).sort().map(f => path.join(BUN, f)) : [])

@@ -3,7 +3,6 @@
 // 出力: 入れた値・確認の画面の手がかり・<置き場>/shot/teian-<ID>.png。go で送れたら本文の控え・oubo-kiroku.tsv に「提案」の1行・teian-jiten.tsv に提案数
 // 止まる条件(rc=2): 題名20字超・提案一覧／送る直前の記録／記録に同じ案件・同じ依頼主の同じ題名・分野/勧誘/できるか/成果の言い方/マナーの門・本文に穴（{…}）／rc=3 依頼主の型で本文が上書きされた／rc=4 提案の鍵が10分空かない
 // 呼び方: node tools/teian.cjs <ID> <本文> <題名> <計画> <税抜> <YYYY/MM/DD> [go]（提案画面は1つの入口で1件しか持てないので、鍵で1件ずつにする）
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 const [id, txtf, title, plan, amount, deadline, go] = process.argv.slice(2)
 if (!/^\d+$/.test(id || '') || !txtf || !title || !plan || !amount || !deadline) { console.log('使い方: node tools/teian.cjs <ID> <本文> <題名> <計画> <税抜> <YYYY/MM/DD> [go]'); process.exit(2) }

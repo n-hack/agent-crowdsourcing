@@ -4,8 +4,7 @@
 入口は `bash tools/mawasu.sh`（既定は下書きまで・`--go` のときだけ送る）。1周は長い（CW の応募ごとの部屋を全部開くため）ので裏で回し、終わるたびに呼び直す。
 
 ## 始める前に（1回だけ）
-1. `node tools/nhack-mon.cjs` が ✅ になること
-2. `config/profile.example.json` を `config/profile.json` に写して直す
+1. `config/profile.example.json` を `config/profile.json` に写して直す
    - 名乗り・署名・名前・会社名・メール … 応募文と返事に入る（見本の「◯◯」のままだと下書きの道具が止まる）
    - 自分の名前の印 … 返事の見張りが「最後に書いたのが自分か」を見分ける語（会社名・名前）
    - 自社の依頼主ID … 自分の会社が出した募集に応募しないための依頼主の表示名

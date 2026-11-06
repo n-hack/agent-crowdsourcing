@@ -3,7 +3,6 @@
 // 出力: 台帳の中身・入れた字数・載ったか。本文に約束の語（本日中・までに・お送りいたします 等）があれば <置き場>/yakusoku.tsv に「未」で積む
 // 止まる条件(rc=2): 台帳が無いのに go（AITE_OK=1 で外す）・マナー／成果の言い方の門・本文の欄が1つでない・送った後に頁に載っていない
 // 呼び方: [ATTACH=ファイル] node tools/cwreply.cjs <部屋> <本文> [go]
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 const [id, f, go] = process.argv.slice(2)
 if (!id || !f) { console.log('使い方: node tools/cwreply.cjs <部屋> <本文> [go]'); process.exit(2) }

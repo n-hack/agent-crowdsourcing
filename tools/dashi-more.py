@@ -8,7 +8,6 @@
 import os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import settei as S
-S.mon()
 BUN = S.DATA / 'oubo-bun'; ZUMI = S.DATA / 'dashi-zumi.tsv'
 zumi = {l.split('\t')[0] for l in open(ZUMI, encoding='utf-8') if l.count('\t') >= 2 and l.split('\t')[2] in ('済', '終了')} if ZUMI.exists() else set()
 DETA = re.compile(r'^(応募|読み直し：応募|提案|興味|応募済)')

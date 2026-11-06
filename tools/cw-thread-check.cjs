@@ -3,7 +3,6 @@
 // 出力: 「要返信 <応募番号> | 相手 | 時刻 | 頭 | 題名」の行と「開いた応募 N ／ 要返信 M」。--atarashii なら前に出した物（<置き場>/junkai/thread-seen.txt）を除いた新しい行だけ
 // 止まる条件: 要返信が1件以上で rc=1／ブラウザ・頁が読めない rc=3。受信箱には出ず応募の頁にだけ届く便があるため、受信箱とは別に見る
 // 呼び方: node tools/cw-thread-check.cjs [--atarashii]
-require('./nhack-mon.cjs')()
 const fs = require('fs'), path = require('path'), S = require('./settei.cjs')
 const ATARASHII = process.argv.includes('--atarashii'), SEEN = path.join(S.DATA, 'junkai', 'thread-seen.txt')
 // 返事の要らない終わりの便（不採用・見送りの知らせ）では鳴らさない

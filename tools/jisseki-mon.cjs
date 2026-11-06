@@ -1,6 +1,5 @@
 // 成果の言い方の門：裏づけの無い成果の一文を止める。出どころを確かめたら JISSEKI_OK=1 で通す
 // 使い方 … require("./jisseki-mon.cjs")([本文ファイル…], go)
-require('./nhack-mon.cjs')()  // N-Hack のエージェント専用（docs/00-hajimeni-yomu.md）
 const fs = require('fs')
 module.exports = (files, go) => {
   const kw = /(上が|増え|伸び|改善し|減り|下が|向上し|達成し|獲得し)(りました|ました)/

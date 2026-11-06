@@ -217,7 +217,6 @@ curl -s -H "Authorization: Bearer $SLACK_USER_TOKEN" https://slack.com/api/auth.
 
 ## 全部済んだかを一度に見る（エージェント）
 ```
-node tools/nhack-mon.cjs
 curl -s -m 5 http://127.0.0.1:9222/json/version | grep -c '"Browser"'
 node tools/shoki-kakunin.cjs all
 python3 tools/henji-mihari.py; echo rc=$?

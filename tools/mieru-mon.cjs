@@ -1,7 +1,6 @@
 // 表の門：添付が .xlsx / .csv なら、送る前に xlsx-mieru.py で見出しの色・固定・絞り込み・列の幅・リンクを付けて上書きする（csv は同じ名前の .xlsx を作り、添付をそちらに差し替える）
 // 使い方: const p = require('./mieru-mon.cjs')(添付のパス, go) → 実際に添付するパスを返す。🔴 なら go で止める
 // 要る物: python3 と openpyxl（pip install openpyxl）。経歴なしでも再現：する
-require('./nhack-mon.cjs')()  // N-Hack のエージェント専用（docs/00-hajimeni-yomu.md）
 const { execFileSync } = require('child_process'), path = require('path')
 module.exports = (f, go) => {
   if (!f || !/\.(xlsx|csv)$/i.test(f)) return f

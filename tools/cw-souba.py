@@ -12,7 +12,6 @@
 import datetime as dt, html, json, os, re, statistics, sys, urllib.parse, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import settei as S
-S.mon()
 a = sys.argv[1:]
 skip = ''
 obi = None
