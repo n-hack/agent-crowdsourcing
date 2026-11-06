@@ -110,8 +110,9 @@ const yen = s => +String(s).replace(/,/g, '')
         const zei = Math.round(kin * 1.1); if (zei < b.min || zei > b.max) red.push(`金額が予算の帯の外：税込 ${zei.toLocaleString()}円 ／ 帯 ${b.min.toLocaleString()}〜${b.max.toLocaleString()}円（${b.doko}）`)
         // 試し8回目：帯ありの募集で道具を打たずに 50,000円と書き、根拠が空のまま ✅ で通った → 帯ありも cw-souba.py --obi の1行を要る
         const nk = String(J['金額の根拠'] || '').match(/帯のある募集の額：([\d,]+)円/)
-        if (!nk) red.push(`帯のある募集なのに .json の「金額の根拠」に cw-souba.py --obi の1行が無い：python3 tools/cw-souba.py --id ${id} --obi ${b.min}-${b.max} <何を> <どの道具で> の最後の1行を写す`)
+        if (!nk) red.push(`帯のある募集なのに .json の「金額の根拠」に cw-souba.py --obi の1行が無い：python3 tools/cw-souba.py --id ${id} --obi ${b.min}-${b.max} の最後の1行を写す`)
         else if (yen(nk[1]) !== kin) red.push(`.json の金額 ${kin} が「金額の根拠」の帯のある募集の額 ${nk[1]}円 と合わない`)
+        else { const lo = Math.floor(b.min * 10 / 11 / 1000) * 1000, hi = Math.floor(b.max * 10 / 11 / 1000) * 1000, motome = Math.min(Math.max(Math.floor(Math.floor(b.max * 6 / 10) * 10 / 11 / 1000) * 1000, lo), hi); if (kin !== motome) red.push(`帯のある募集の額は 上限×0.6 で ${motome.toLocaleString()}円（帯 ${b.min.toLocaleString()}〜${b.max.toLocaleString()}円）。.json の ${kin.toLocaleString()}円 と違う：cw-souba.py --obi を打ち直して写す`) }  // 11/06 試し9の直し：額は帯だけで決まるので、根拠の1行を手で書き換えても照らせる
       }
     }
     // ⑥ 本文の金額と .json
