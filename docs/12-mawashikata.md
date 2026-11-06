@@ -12,7 +12,7 @@
    - ブラウザ … ログイン済みの Chrome をつなぐ先（`--remote-debugging-port=<CDPのポート>` で起こす。環境変数 `CS_CDP_URL`／`CS_CDP_PORT` が先）。ほかの人・ほかの作業と同じブラウザを取り合わない
    - 巡回の語 … CW の新着を引く語（"" は語なしの新着一覧）。取る分野は config/bunya.json
    - メールの見張り・面談の予定 … Google Workspace のサービスアカウント（受信箱を代理で読む・予定の空きだけ読む）。未設定なら、その段は「見ていない」と出す（0件とは言わない）
-3. 要る物：node と playwright（`npm i -g playwright`）・python3・メールと予定を使うなら `pip install google-auth requests`
+2. 要る物：node と playwright（`npm i -g playwright`）・python3・メールと予定を使うなら `pip install google-auth requests`
 
 ## 段と道具
 | 段 | 道具 | 入力 | 出力 | 止まる条件 |
