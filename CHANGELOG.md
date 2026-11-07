@@ -101,3 +101,4 @@
 - 2026-11-07 12:41 自動更新： 1 file changed, 2 insertions(+), 2 deletions(-)（知見 +0行）
 - 2026-11-07 13:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
 - 2026-11-07 14:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-07 20:2x 17章に3行：reCAPTCHA の場は欄ごと本人のスマホで／登録の続きの面談予約表は予定の空きと突き合わせて一番早い枠／職種の選択でスキル候補が絞られる
