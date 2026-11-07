@@ -96,3 +96,4 @@
 - 2026-11-07 08:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
 - 2026-11-07 08:47 06：台帳は1つの部屋に1枚（2通りの番号で2枚作ると返事・面談を二重に数える実測）
 - 2026-11-07 11:46 自動更新： 3 files changed, 8 insertions(+), 11 deletions(-)（知見 +0行）
+- 2026-11-07 11:50 自動更新： 1 file changed, 6 insertions(+)（知見 +6行）
