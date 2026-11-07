@@ -1,0 +1,97 @@
+# 更新の記録
+
+- 2026-11-03 はじめて置いた：docs 01〜09・門4本（勧誘・できるか・マナー・成果の言い方）と試し
+- 2026-11-03 19:1x 訂正：08 の応募数（見送りを含めていた）を数え直し・09 に穴2つ
+- 2026-11-03 19:05 自動更新： 4 files changed, 21 insertions(+), 3 deletions(-)（知見 +2行）
+- 2026-11-03 19:06 自動更新： 1 file changed, 1 insertion(+), 1 deletion(-)（知見 +0行）
+- 2026-11-03 19:08 自動更新： 1 file changed, 3 insertions(+)（知見 +3行）
+- 2026-11-03 19:11 自動更新： 1 file changed, 2 insertions(+)（知見 +2行）
+- 2026-11-03 19:24 自動更新： 9 files changed, 53 insertions(+), 1 deletion(-)（知見 +1行）
+- 2026-11-03 19:27 自動更新： 3 files changed, 52 insertions(+)（知見 +0行）
+- 2026-11-03 19:55 自動更新： 1 file changed, 4 insertions(+)（知見 +4行）
+- 2026-11-03 20:21 自動更新： 4 files changed, 84 insertions(+), 4 deletions(-)（知見 +4行）
+- 2026-11-03 20:37 自動更新： 3 files changed, 8 insertions(+), 4 deletions(-)（知見 +4行）
+- 2026-11-03 20:45 自動更新： 3 files changed, 51 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-03 20:47 自動更新： 2 files changed, 51 insertions(+)（知見 +0行）
+- 2026-11-03 21:41 自動更新： 3 files changed, 12 insertions(+), 5 deletions(-)（知見 +4行）
+- 2026-11-03 22:41 自動更新： 1 file changed, 1 insertion(+)（知見 +0行）
+- 2026-11-03 23:41 自動更新： 2 files changed, 26 insertions(+)（知見 +0行）
+- 2026-11-04 01:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-04 02:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-04 03:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-04 tools/pdf2tenki.py を足した（PDF 転記の2通り突き合わせ）
+- 2026-11-04 04:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-04 05:30 自動更新： 3 files changed, 10 insertions(+), 4 deletions(-)（知見 +5行）
+- 2026-11-04 05:41 自動更新： 1 file changed, 1 insertion(+)（知見 +1行）
+- 2026-11-04 06:41 自動更新： 2 files changed, 6 insertions(+), 4 deletions(-)（知見 +2行）
+- 2026-11-04 07:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-04 09:41 自動更新： 3 files changed, 21 insertions(+), 9 deletions(-)（知見 +1行）
+- 2026-11-04 10:41 自動更新： 1 file changed, 5 insertions(+), 5 deletions(-)（知見 +0行）
+- 2026-11-04 11:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-04 12:41 自動更新： 1 file changed, 5 insertions(+), 5 deletions(-)（知見 +0行）
+- 2026-11-04 13:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-04 14:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-04 15:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-04 16:41 自動更新： 1 file changed, 2 insertions(+), 2 deletions(-)（知見 +0行）
+- 2026-11-04 17:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-04 18:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-04 19:41 自動更新： 1 file changed, 5 insertions(+), 5 deletions(-)（知見 +0行）
+- 2026-11-04 22:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-04 23:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-05 00:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-05 06:41 自動更新： 1 file changed, 10 insertions(+)（知見 +10行）
+- 2026-11-05 10:27 自動更新： 3 files changed, 28 insertions(+), 7 deletions(-)（知見 +0行）
+- 2026-11-05 10:41 自動更新： 2 files changed, 6 insertions(+), 6 deletions(-)（知見 +0行）
+- 2026-11-05 12:41 自動更新： 2 files changed, 16 insertions(+), 3 deletions(-)（知見 +1行）
+- 2026-11-05 13:41 自動更新： 2 files changed, 4 insertions(+), 3 deletions(-)（知見 +1行）
+- 2026-11-05 15:41 自動更新： 2 files changed, 5 insertions(+), 3 deletions(-)（知見 +2行）
+- 2026-11-05 16:41 自動更新： 2 files changed, 10 insertions(+), 3 deletions(-)（知見 +7行）
+- 2026-11-05 17:41 自動更新： 2 files changed, 14 insertions(+), 4 deletions(-)（知見 +10行）
+- 2026-11-05 18:41 自動更新： 2 files changed, 4 insertions(+), 2 deletions(-)（知見 +2行）
+- 2026-11-05 19:41 自動更新： 2 files changed, 7 insertions(+), 3 deletions(-)（知見 +4行）
+- 2026-11-05 21:0x tools/manner-mon.cjs に AIっぽさの検査を足した（docs/06）／tools/bunya-mon.cjs と config/bunya.example.json を足した（docs/04）
+- 2026-11-05 21:41 自動更新： 3 files changed, 11 insertions(+), 9 deletions(-)（知見 +2行）
+- 2026-11-05 21:5x 勧誘の見分け方（外のアンケート・長い選考）と、分野の門の直し・取り下げ・逆算の決め方を docs/04 に／採用の初回面談は受けるを docs/06 に／見本付きの応募を docs/05 に足した
+- 2026-11-05 22:2x 前向きな返事への先回り（5〜10件の見本）と、表を見やすく整えてから渡すことを docs/06 に足した
+- 2026-11-05 22:3x tools/xlsx-mieru.py（表を人が見やすい形に整える）と tools/mieru-mon.cjs（添付の表を送る前に自動で整える門）を足した／kanyu-mon に「お金の事情を聞く（ローン・借入）」の強い印、dekiru-mon に「面談の行の顔出しは止めない」を足した
+- 2026-11-05 22:42 自動更新： 4 files changed, 8 insertions(+), 6 deletions(-)（知見 +0行）
+- 2026-11-05 22:42 自動更新： 1 file changed, 1 insertion(+)（知見 +1行）
+- 2026-11-05 22:47 自動更新： 2 files changed, 6 insertions(+), 3 deletions(-)（知見 +3行）
+- 2026-11-05 22:50 自動更新： 2 files changed, 5 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-05 23:07 自動更新： 2 files changed, 5 insertions(+), 3 deletions(-)（知見 +2行）
+- 2026-11-05 23:41 自動更新： 2 files changed, 4 insertions(+), 3 deletions(-)（知見 +1行）
+- 2026-11-06 00:41 自動更新： 1 file changed, 5 insertions(+), 5 deletions(-)（知見 +0行）
+- 2026-11-06 01:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-06 02:41 自動更新： 1 file changed, 6 insertions(+), 6 deletions(-)（知見 +0行）
+- 2026-11-06 03:41 自動更新： 1 file changed, 5 insertions(+), 5 deletions(-)（知見 +0行）
+- 2026-11-06 04:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-06 05:41 自動更新： 1 file changed, 6 insertions(+), 6 deletions(-)（知見 +0行）
+- 2026-11-06 06:41 自動更新： 2 files changed, 11 insertions(+), 8 deletions(-)（知見 +0行）
+- 2026-11-06 07:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-06 08:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-06 09:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-06 12:41 自動更新： 3 files changed, 17 insertions(+), 9 deletions(-)（知見 +8行）
+- 2026-11-06 回す道具を入れた：入口 tools/mawasu.sh と巡回・門・下書き・応募・返事の見張り・返事・検算の道具（個人の値は config/profile.json と環境変数から）／docs/12 回し方・docs/13 面談の前の1枚
+- 2026-11-06：docs/14 初月から月100万の逆算（式と最初の実測の率・1日の応募の目標）
+- 2026-11-06 13:41 自動更新： 2 files changed, 9 insertions(+), 5 deletions(-)（知見 +4行）
+- 2026-11-06 初期構築の章（docs/15・人がやる所と確かめの1行・tools/shoki-kakunin.cjs）／プロフィールとポートフォリオの章（docs/16・templates/profile/・templates/portfolio/）／再現の試しの不足を直した（docs/00 に問診票とプラグインの入れ方・nhack-mon の止まる文・docs/12 に終わりの受け方と門を通った ID の置き場と playwright の確かめ・mawasu.sh が門の全行を junkai/mon-*.txt に残す）
+- 2026-11-06 samples/ に見本 01・02・03 の実物（架空の題材・動かした出力つき）を置き、docs/16 と templates/portfolio から張った
+- 2026-11-06 14:41 自動更新： 2 files changed, 7 insertions(+), 4 deletions(-)（知見 +3行）
+- 2026-11-06 15:41 自動更新： 1 file changed, 2 insertions(+), 2 deletions(-)（知見 +0行）
+- 2026-11-06 17:41 自動更新： 1 file changed, 6 insertions(+), 6 deletions(-)（知見 +0行）
+- 2026-11-06 18:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-06 19:41 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-06 20:42 自動更新： 1 file changed, 4 insertions(+), 4 deletions(-)（知見 +0行）
+- 2026-11-06 21:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-06 22:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-06 23:41 自動更新： 1 file changed, 5 insertions(+), 5 deletions(-)（知見 +0行）
+- 2026-11-07 00:41 自動更新： 2 files changed, 5 insertions(+), 4 deletions(-)（知見 +1行）
+- 2026-11-07 01:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-07 N-Hack のプラグインが無いと止まる門（tools/nhack-mon.cjs）を外した：道具28本の呼び出しと docs・README の手順から消した（空の設定で 前 rc=9 → 後 rc=0）。LICENSE を招待された人だけの利用・写し・再配布・フォーク禁止に直した
+- 2026-11-07 02:41 自動更新： 1 file changed, 1 insertion(+)（知見 +1行）
+- 2026-11-07 03:41 自動更新： 2 files changed, 9 insertions(+), 3 deletions(-)（知見 +6行）
+- 2026-11-07 06:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-07 07:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-07 08:38 17 章 6：新着の見張りは未判断の候補があれば止めて起こす（書くだけで候補9件が約4時間残った実測）・月額の場は職種名でなく本文で、人を束ねる役は見送る
+- 2026-11-07 08:41 自動更新： 1 file changed, 3 insertions(+), 3 deletions(-)（知見 +0行）
+- 2026-11-07 08:47 06：台帳は1つの部屋に1枚（2通りの番号で2枚作ると返事・面談を二重に数える実測）

@@ -1,0 +1,28 @@
+[Title]
+Spreadsheet and Report Automation | Google Apps Script, Python, Data Entry
+
+[Overview]
+I help small teams stop doing the same office work by hand.
+Typical jobs:
+Turning a weekly Excel or CSV export into a finished report
+Connecting Google Sheets to other tools with Apps Script
+Collecting data from public pages or APIs into a clean list
+Setting up an assistant that drafts answers from your own FAQ
+I work through my company, {会社名}, and can issue invoices in its name.
+{経歴があれば1〜3行}
+
+How I work:
+Before I start, I confirm in writing what will be delivered, by when, and for how much.
+I keep a copy of your original data, so it can always be restored.
+You see a working version before the final delivery, and small fixes after delivery are free.
+
+The projects in my portfolio are samples made with fictional data.
+They show the kind of work I deliver, not past clients.
+
+I use AI tools in my workflow and check every result against your files before delivery.
+
+Availability: {稼働の曜日}, {稼働の時間帯} (Japan time).
+I reply within {返信の目安} and can deliver small tasks in {納期の最短}.
+Small fixed-price tasks start from {料金の下限ドル} USD.
+
+{名前のローマ字}
