@@ -26,7 +26,7 @@ if (not a and not obi) or (a and a[0] in ('-h', '--help')):  # 試し10回目：
 if skip:  # 試し9回目：帯の無い募集に作った帯（--obi 0-82500）を付けても止まらなかった → 公開頁の帯と --obi を照らす
     try:
         pj = urllib.request.urlopen(urllib.request.Request('https://crowdworks.jp/public/jobs/' + skip, headers={'User-Agent': 'Mozilla/5.0'}), timeout=30).read().decode('utf-8', 'ignore')
-        pj = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', re.sub(r'<script[\s\S]*?</script>|<style[\s\S]*?</style>', ' ', pj))).replace('&nbsp;', ' ')
+        pj = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', re.sub(r'(?is)<(script|style)\b[^>]*>.*?</\1\s*>', ' ', pj))).replace('&nbsp;', ' ')
     except Exception as e:
         pj = None; print('🟡 公開頁が読めず、帯は照らせない', e)
     if pj is not None:

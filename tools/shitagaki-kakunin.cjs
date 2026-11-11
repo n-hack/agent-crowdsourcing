@@ -33,7 +33,7 @@ const tsvRow = id => {
 const PEJI = {}
 const peji = async id => {
   if (id in PEJI) return PEJI[id]
-  try { PEJI[id] = (await (await fetch('https://crowdworks.jp/public/jobs/' + id, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(30000) })).text()).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ') }
+  try { PEJI[id] = (await (await fetch('https://crowdworks.jp/public/jobs/' + id, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(30000) })).text()).replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ') }
   catch (e) { PEJI[id] = null }
   return PEJI[id]
 }

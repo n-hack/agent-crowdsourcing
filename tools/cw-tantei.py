@@ -130,7 +130,7 @@ for r in rows:
     except Exception as e:
         say(jid, '取れず', e); continue
     time.sleep(1.0)
-    t = re.sub(r'<script.*?</script>|<style.*?</style>', '', t, flags=re.S)
+    t = re.sub(r'<(script|style)\b[^>]*>.*?</\1\s*>', '', t, flags=re.S | re.I)
     x = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', t)))
     n_got += 1
     pr = subprocess.run(['node', HANTEI], input=json.dumps([{'id': jid, 'text': x}]), capture_output=True, text=True, timeout=60)
