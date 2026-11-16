@@ -23,7 +23,8 @@ const SIGNS = [
 ]
 module.exports = (text) => {
   // CW の全ページの下に付く注意書き（「サービス外連絡申請」の承認前に…）で、どの募集にも『外の連絡へ誘導』が1つ付いていた → その1文を外してから数える
-  const t = String(text || '').replace(/MLMや購入代行[^\n]*/g, '')
+  // 5x はるとさんの「全角の数字（５５円）を読めなかった」を当てたら、お試しの印が全角を読めていなかった → NFKC で半角にそろえてから読む
+  const t = String(text || '').normalize('NFKC').replace(/MLMや購入代行[^\n]*/g, '')
   const hits = []
   for (const [re, why] of SIGNS) { const m = t.match(re); if (m) hits.push(why + '（' + m[0].slice(0, 20) + '）') }
   const strong = hits.some(h => h.startsWith('スクールの受講を聞く') || h.startsWith('お金の事情を聞く') || h.startsWith('口座・売上の振替を求める'))
@@ -48,6 +49,7 @@ if (require.main === module) {
     // 11/16 はるとさんの実例（言い回しは別の書き方も入れる）
     '副業初心者向けの動画を見て、簡単な感想を書くだけのお仕事です。報酬 110円',
     'セミナー動画を視聴していただき、アンケートの質問に回答してください。1件100円',
+    '初回お試し案件 ５５円。未経験歓迎で稼げます',
   ]
   const ok = [
     'Windows上で動くPythonの自動化システムの保守・改修。オンライン面談の上で決めます。契約金額はご相談',
